@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.1.0",
+    "node-cron": "^3.0.2",
+    "node-fetch": "^3.3.0",
+    "node-telegram-bot-api": "^0.60.0"
+  },
+  "scripts": {
+    "dev": "nodemon bot.js -e js"
+  }
+}
