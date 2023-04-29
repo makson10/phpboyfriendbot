@@ -6,6 +6,7 @@ const { handleLessonSchedule, addLinksToSchedule } = require('./functions/lesson
 const TelegramBot = require("node-telegram-bot-api");
 const TOKEN = process.env.TOKEN || '5735930962:AAFjGUCmSoiorJdnaXv0Thg4QwquFw9g8pE';
 const bot = new TelegramBot(TOKEN);
+bot.setWebHook('https://phpboyfriendbotwebhook.onrender.com/' + TOKEN);
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -14,7 +15,8 @@ const app = express();
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('fuck u');
+    console.log('got GET / req');
+    res.status(200).send({ message: 'fuck u' });
 });
 
 app.post(`/${TOKEN}`, (req, res) => {
@@ -23,6 +25,10 @@ app.post(`/${TOKEN}`, (req, res) => {
 });
 
 // ----------------------------------------------------------------
+
+bot.on('message', (msg) => {
+    console.log(msg);
+});
 
 bot.onText(/^\/rofl/, (msg) => {
     rofl(bot, msg);
