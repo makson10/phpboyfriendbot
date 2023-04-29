@@ -50,16 +50,12 @@ function formatDataToSend(text) {
         data["lessons"].push(newLesson);
     });
 
-    const lastLessonTime = {
-        hour: data['lessons'][data.lessons.length - 1]['time']['hour'],
-        minute: data['lessons'][data.lessons.length - 1]['time']['minute']
-    }
+    // const lastLessonTime = {
+    //     hour: data['lessons'][data.lessons.length - 1]['time']['hour'],
+    //     minute: data['lessons'][data.lessons.length - 1]['time']['minute']
+    // }
 
-    console.log(lastLessonTime);
-
-    cron.schedule(`${lastLessonTime.minute} ${lastLessonTime.hour} * * *`, () => {
-        console.log('fuck');
-    }); // для этой хуйни должен бот работать 24/7
+    // console.log(lastLessonTime);
 
     return data;
 }

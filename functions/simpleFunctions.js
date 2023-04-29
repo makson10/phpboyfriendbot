@@ -121,10 +121,12 @@ async function getDocument(bot, msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
-    const stickerPackData = await bot.getStickerSet('NiggersMeme');
-    const randomNumber = Math.floor(Math.random() * stickerPackData['stickers'].length);
+    const firstStickerPackData = await bot.getStickerSet('NiggersMeme');
+    const secondStickerPackData = await bot.getStickerSet('Jakkakskzksakoa_by_demybot');
+    const stickerArray = [...firstStickerPackData['stickers'], ...secondStickerPackData['stickers']];
+    const randomNumber = Math.floor(Math.random() * stickerArray.length);
 
-    bot.sendSticker(chatId, stickerPackData['stickers'][randomNumber]['file_id'], {
+    bot.sendSticker(chatId, stickerArray[randomNumber]['file_id'], {
         reply_to_message_id: messageId,
     });
 }
@@ -179,68 +181,51 @@ async function compliment(bot, msg, match) {
     await bot.sendMessage(chatId, messageToSend);
 }
 
+async function spam(bot, msg, match) {
+    const chatId = msg.chat.id;
+    const messageId = msg.message_id;
+    const data = match[1];
 
-module.exports = { rofl, meme, thisMeme, neUmnichai, ktoI, shock, thanks, say, getDocument, compliment };
+    if (!data.includes(':')) return;
 
+    const dataArray = data.split(':');
+    let victim;
 
-// function subCount(bot, msg) {
-//     const chatId = msg.chat.id;
-//     const messageId = msg.message_id;
+    const vars = await fetch("http://mediator-topaz.vercel.app/api/vars").then(
+        (data) => data.json()
+    );
 
-//     const inlineKeyboard = {
-//         inline_keyboard: [
-//             [{
-//                 text: 'Timarius',
-//                 callback_data: 'Timarius',
-//             }],
-//             [{
-//                 text: 'Extra Gay',
-//                 callback_data: 'Extra Gay',
-//             }],
-//             [{
-//                 text: 'Ютубер Санек',
-//                 callback_data: 'Youtuber Sanek',
-//             }],
-//             [{
-//                 text: 'Елисей',
-//                 callback_data: 'Elecey',
-//             }],
-//         ],
-//         resize_keyboard: true,
-//         one_time_keyboard: true,
-//     };
+    switch (dataArray[1]) {
+        case 'maks':
+            victim = vars[0]['vars']['Makson_w_chat_id'];
+            break;
 
-//     bot.deleteMessage(chatId, messageId);
-//     bot.sendMessage(chatId, 'Выберете автора:', {
-//         reply_markup: inlineKeyboard,
-//     });
-// }
+        case 'snus':
+            victim = vars[0]['vars']['Timarius73_chat_id'];
+            break;
 
-// async function callbackSubCount(bot, callbackQuery) {
-//     const chatId = callbackQuery.message.chat.id;
-//     const messageId = callbackQuery.message.message_id;
-//     const authorName = callbackQuery.data;
-//     let channelURL;
+        case 'vlad':
+            victim = vars[0]['vars']['Klymvl_chat_id'];
+            break;
 
-//     if (authorName === 'Timarius') {
-//         channelURL = 'https://www.youtube.com/@TimariusGod';
-//     } else if (authorName === 'Extra Gay') {
-//         channelURL = 'https://www.youtube.com/@extragay4665';
-//     } else if (authorName === 'Youtuber Sanek') {
-//         channelURL = 'https://www.youtube.com/@user-rv4bs8pg1g';
-//     } else if (authorName === 'Elecey') {
-//         channelURL = 'https://www.youtube.com/@user-ff3or6bz3e';
-//     } else {
-//         bot.deleteMessage(chatId, messageId);
-//         return;
-//     }
+        case 'vika':
+            victim = vars[0]['vars']['pidoprigora21_chat_id'];
+            break;
 
+        case 'dima':
+            victim = vars[0]['vars']['Dimon897_chat_id'];
+            break;
 
-//     const siteMarkup = await fetch(channelURL)
-//         .then(res => res.text());
+        default:
+            break;
+    }
 
-//     const subCount = '';
+    for (let i = 0; i < dataArray[0]; i++) {
+        bot.sendMessage(victim, dataArray[2]);
+    }
 
-//     await bot.deleteMessage(chatId, messageId);
-//     await bot.sendMessage(chatId, subCount || 'fuck u');
-// }
+    await bot.deleteMessage(chatId, messageId);
+}
+
+module.exports = { rofl, meme, thisMeme, neUmnichai, ktoI, shock, thanks, say, getDocument, compliment, spam };
+

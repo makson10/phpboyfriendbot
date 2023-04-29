@@ -1,12 +1,26 @@
 require("dotenv").config();
-const { setupLinkMessage, addNewLink, renderLinkMessage, deleteLink, callbackDeleteLink, deleteAllLink, callbackDeleteAllLink } = require('./functions/linkMessage');
-const { rofl, meme, thisMeme, neUmnichai, ktoI, shock, thanks, say, getDocument, compliment } = require('./functions/simpleFunctions');
+const { setupLinkMessage, addNewLink, renderLinkMessage, deleteLink, callbackDeleteLink, returnLastHWLink, deleteAllLink, callbackDeleteAllLink } = require('./functions/linkMessage');
+const { rofl, meme, thisMeme, neUmnichai, ktoI, shock, thanks, say, getDocument, compliment, spam } = require('./functions/simpleFunctions');
 const { handleLessonSchedule, addLinksToSchedule } = require('./functions/lessonsPin');
 
 const TelegramBot = require("node-telegram-bot-api");
+const TOKEN = process.env.TOKEN || '5735930962:AAFjGUCmSoiorJdnaXv0Thg4QwquFw9g8pE';
+const bot = new TelegramBot(TOKEN);
 
-const TOKEN = process.env.TOKEN;
-const bot = new TelegramBot(TOKEN, { polling: true });
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+    res.send('fuck u');
+});
+
+app.post(`/${TOKEN}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
+});
 
 // ----------------------------------------------------------------
 
@@ -46,14 +60,6 @@ bot.onText(/^\/compliment (.+)/, (msg, match) => {
     compliment(bot, msg, match);
 });
 
-// bot.onText(/^\/sub_count/, (msg) => {
-//     subCount(bot, msg);
-// });
-
-// bot.on("callback_query", async (callbackQuery) => {
-//     callbackSubCount(bot, callbackQuery);
-// });
-
 // --------------------------------------
 
 bot.onText(/^\Уроки на /, (msg) => {
@@ -82,6 +88,10 @@ bot.onText(/^\/add_links/, (msg) => {
     }
 
     addLinksToSchedule(bot, msg);
+});
+
+bot.onText(/^\/spam (.+)/, (msg, match) => {
+    spam(bot, msg, match);
 });
 
 bot.on("document", (msg) => {
@@ -132,6 +142,16 @@ bot.on("callback_query", async (callbackQuery) => {
     await callbackDeleteLink(bot, callbackQuery);
 });
 
+bot.onText(/^\/return_last_hw_link/, async (msg) => {
+    const chatId = msg.chat.id;
+    if (msg.chat.type !== "supergroup") {
+        return;
+    }
+
+    await returnLastHWLink(bot, msg);
+    await renderLinkMessage(bot, chatId);
+});
+
 bot.onText(/^\/delete_all_link/, (msg) => {
     if (msg.chat.type !== "supergroup") {
         return;
@@ -142,4 +162,9 @@ bot.onText(/^\/delete_all_link/, (msg) => {
 
 bot.on("callback_query", (callbackQuery) => {
     callbackDeleteAllLink(bot, callbackQuery);
+});
+
+
+app.listen(3000, () => {
+    console.log('Server stated on 3000 port');
 });
