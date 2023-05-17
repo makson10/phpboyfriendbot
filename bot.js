@@ -39,13 +39,13 @@ bot.onText(/^\/set_rofl/, async (msg) => {
    roflMessageToEditId = sentMessage.message_id;
 });
 
-bot.on(“message”, async (msg) => {
+bot.on("message", async (msg) => {
    if (msg.message_id === roflTextMessageId) {
       await bot.editMessageText(`Напишите ${msg.text} если Максон красавчик`, { chat_id: msg.chat.id, message_id: roflTextMessageId});
   }
 });
 
-bot.on(“edited_message”, async (msg) => {
+bot.on("edited_message", async (msg) => {
    if (msg.message_id === roflTextMessageId) {
       await bot.editMessageText(`Напишите ${msg.text} если Максон красавчик`, { chat_id: msg.chat.id, message_id: roflTextMessageId});
   }
