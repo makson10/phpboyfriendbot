@@ -14,11 +14,6 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    console.log('got GET / req');
-    res.status(200).send({ message: 'fuck u' });
-});
-
 app.post(`/${TOKEN}`, (req, res) => {
     bot.processUpdate(req.body);
     res.sendStatus(200);
@@ -27,7 +22,7 @@ app.post(`/${TOKEN}`, (req, res) => {
 // ----------------------------------------------------------------
 
 bot.on('message', (msg) => {
-    console.log(msg);
+    bot.copyMessage(msg.chat.id, msg.chat.id, msg.message_id);
 });
 
 bot.onText(/^\/rofl/, (msg) => {
