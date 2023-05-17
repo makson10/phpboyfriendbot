@@ -25,7 +25,33 @@ bot.on('message', (msg) => {
     console.log(msg);
 });
 
-bot.onText(/^\/set_rofl (.+)/, async (msg, match) => {
+let isRoflSetUp = false;
+let roflTextMessageId;
+let roflMessageToEditId;
+
+bot.onText(/^\/set_rofl/, async (msg) => {
+    const chatId = msg.chat.id;
+    const messageId = msg.chat.id;
+
+   await bot.deleteMessage(chatId, messageId);
+   const sentMessage = await bot.sendMessage(chatId, “Напишите бэбра если Максон красавчик”;
+   roflTextMessageId = sentMessage.message_id + 1;
+   roflMessageToEditId = sentMessage.message_id;
+});
+
+bot.on(“message”, async (msg) => {
+   if (msg.message_id === roflTextMessageId) {
+      await bot.editMessageText(`Напишите ${msg.text} если Максон красавчик`, { chat_id: msg.chat.id, message_id: roflTextMessageId});
+  }
+});
+
+bot.on(“edited_message”, async (msg) => {
+   if (msg.message_id === roflTextMessageId) {
+      await bot.editMessageText(`Напишите ${msg.text} если Максон красавчик`, { chat_id: msg.chat.id, message_id: roflTextMessageId});
+  }
+});
+
+/* bot.onText(/^\/set_rofl (.+)/, async (msg, match) => {
     const chatId = msg.chat.id;
     const messageForTakeTextId = match[1];
 
@@ -43,7 +69,7 @@ bot.onText(/^\/set_rofl (.+)/, async (msg, match) => {
             console.log(error);
         }
     });
-})
+}); */
 
 bot.onText(/^\/rofl/, (msg) => {
     rofl(bot, msg);
