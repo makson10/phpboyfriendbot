@@ -34,7 +34,7 @@ bot.onText(/^\/set_rofl/, async (msg) => {
     const messageId = msg.chat.id;
 
    await bot.deleteMessage(chatId, messageId);
-   const sentMessage = await bot.sendMessage(chatId, “Напишите бэбра если Максон красавчик”);
+   const sentMessage = await bot.sendMessage(chatId, "Напишите бэбра если Максон красавчик");
    roflTextMessageId = sentMessage.message_id + 1;
    roflMessageToEditId = sentMessage.message_id;
 });
