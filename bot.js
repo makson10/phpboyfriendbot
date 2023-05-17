@@ -21,9 +21,25 @@ app.post(`/${TOKEN}`, (req, res) => {
 
 // ----------------------------------------------------------------
 
-bot.on('edited_message', (msg) => {
-    console.log(msg);
-});
+bot.onText(/^\/set_rofl (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const messageForTakeTextId = match[1];
+
+    await bot.deleteMessage(chatId, msg.message_id);
+    await bot.send(chatId, 'Напишите бэбра если Макс красавчик');
+
+    bot.on('edited_message', async (message) => {
+        try {
+            if (message.message_id === messageForTakeTextId) {
+                await bot.editMessageText(`Напишите ${message.text} если Макс красавчик`, {
+                    chat_id: chatId,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+})
 
 bot.onText(/^\/rofl/, (msg) => {
     rofl(bot, msg);
