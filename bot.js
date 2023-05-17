@@ -21,8 +21,8 @@ app.post(`/${TOKEN}`, (req, res) => {
 
 // ----------------------------------------------------------------
 
-bot.on('message', (msg) => {
-    bot.copyMessage(msg.chat.id, msg.chat.id, msg.message_id);
+bot.on('edited_message', (msg) => {
+    console.log(msg);
 });
 
 bot.onText(/^\/rofl/, (msg) => {
