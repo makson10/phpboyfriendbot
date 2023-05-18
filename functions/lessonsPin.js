@@ -12,7 +12,7 @@ function pinLessonsMessage(bot, msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
-    bot.pinChatMessage(chatId, messageId, { disable_notification: true });
+    msg.chat.type === "supergroup" && bot.pinChatMessage(chatId, messageId, { disable_notification: true });
 }
 
 function formatDataToSend(text) {

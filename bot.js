@@ -25,51 +25,6 @@ bot.on('message', (msg) => {
     console.log(msg);
 });
 
-let isRoflSetUp = false;
-let roflTextMessageId;
-let roflMessageToEditId;
-
-bot.onText(/^\/set_rofl/, async (msg) => {
-    const chatId = msg.chat.id;
-    const messageId = msg.chat.id;
-    
-    const sentMessage = await bot.sendMessage(chatId, "Напишите бэбра если Максон красавчик");
-    roflTextMessageId = sentMessage.message_id + 1;
-    roflMessageToEditId = sentMessage.message_id;
-});
-
-bot.on("message", async (msg) => {
-   if (msg.message_id === roflTextMessageId) {
-      await bot.editMessageText(`Напишите ${msg.text} если Максон красавчик`, { chat_id: msg.chat.id, message_id: roflMessageToEditId});
-  }
-});
-
-bot.on("edited_message", async (msg) => {
-   if (msg.message_id === roflTextMessageId) {
-      await bot.editMessageText(`Напишите ${msg.text} если Максон красавчик`, { chat_id: msg.chat.id, message_id: roflMessageToEditId});
-  }
-});
-
-/* bot.onText(/^\/set_rofl (.+)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-    const messageForTakeTextId = match[1];
-
-    await bot.deleteMessage(chatId, msg.message_id);
-    await bot.sendMessage(chatId, 'Напишите бэбра если Макс красавчик');
-
-    bot.on('edited_message', async (message) => {
-        try {
-            if (message.message_id === messageForTakeTextId) {
-                await bot.editMessageText(`Напишите ${message.text} если Макс красавчик`, {
-                    chat_id: chatId,
-                });
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    });
-}); */
-
 bot.onText(/^\/rofl/, (msg) => {
     rofl(bot, msg);
 });
