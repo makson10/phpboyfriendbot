@@ -1,4 +1,4 @@
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const axios = require('axios').default;
 
 function handleLessonSchedule(bot, msg) {
     const messageText = msg.text;
@@ -61,13 +61,7 @@ function formatDataToSend(text) {
 }
 
 async function sendDataToDB(data) {
-    await fetch('https://mediator-topaz.vercel.app/api/lessons', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    });
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/lessons', data);
 }
 
 async function addLinksToSchedule(bot, msg) {
@@ -92,13 +86,7 @@ function getAllLinks(text) {
 }
 
 async function setNewLinks(data) {
-    await fetch("https://mediator-topaz.vercel.app/api/lessons/addLinks", {
-        method: "POST",
-        body: JSON.stringify({ lessonLinks: data }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/lessons/addLinks', { lessonLinks: data });
 }
 
 module.exports = { handleLessonSchedule, addLinksToSchedule };

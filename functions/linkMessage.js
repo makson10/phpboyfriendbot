@@ -1,5 +1,4 @@
-const fetch = (...args) =>
-    import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const axios = require('axios').default;
 const fs = require('fs/promises');
 
 async function setupLinkMessage(bot, msg) {
@@ -16,18 +15,15 @@ async function setupLinkMessage(bot, msg) {
         return;
     }
 
-    await fetch("http://mediator-topaz.vercel.app/api/vars/setLinkMessage", {
-        method: "POST",
-        body: JSON.stringify({ linkMessageId: messageId + 1 }),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-
-    const existHW = await fetch("http://mediator-topaz.vercel.app/api/hw").then(
-        (data) => data.json()
+    await axios.post(
+        process.env.MEDIATOR_BASE_URL + '/api/vars/setLinkMessage',
+        { linkMessageId: messageId + 1 }
     );
+
+
+    const existHW = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
+        .then(res => res.data);
 
     const hwLinks = existHW["homeworks"];
 
@@ -42,16 +38,43 @@ async function setupLinkMessage(bot, msg) {
 
     await bot.deleteMessage(chatId, messageId);
     await bot.sendMessage(chatId, newLinkMessageText, {
-        disable_notification: true,
+        parse_mode: "HTML",
     });
 }
 
-async function addNewLink(bot, msg) {
+async function addNewLink(bot, msg, command = true) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
     const replyMessage = msg.reply_to_message;
     const messageText = msg.text;
     let messageParameter = messageText.replace('/add_new_link', '').trim();
+    let lessonName = "Без названия";
+
+    const hwLinks = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
+        .then(res => res.data["homeworks"]);
+
+    if (!command) {
+        lessonName = messageText.slice(0, 30);
+
+        const linksWithSameName = await hwLinks.map(link => {
+            if (link.lessonName.includes(lessonName)) return link;
+        }).filter(elem => elem !== undefined);
+
+        if (linksWithSameName.length) lessonName += '_' + (linksWithSameName.length + 1);
+
+        const link = `https://t.me/c/${chatId}/${messageId}`;
+
+        const hw = {
+            lessonName: lessonName,
+            link: link,
+        };
+
+        await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw', hw);
+        await bot.sendMessage(chatId, "Ссылка сделана, радуйтесь");
+
+        return;
+    }
 
     if (!msg.hasOwnProperty("reply_to_message")) {
         bot.deleteMessage(chatId, messageId);
@@ -67,15 +90,11 @@ async function addNewLink(bot, msg) {
         messageParameter = messageParameter.replace('@PHPBoyFriendBot', '').trim();
     }
 
-    let lessonName = "Без названия";
-
     if (replyMessage.hasOwnProperty("caption")) {
         const lines = replyMessage['caption'].split("\n");
         lessonName = lines[0];
-
     } else if (replyMessage.hasOwnProperty("document")) {
         lessonName = replyMessage.document.file_name;
-
     } else if (replyMessage.hasOwnProperty("text")) {
         const lines = replyMessage["text"].split("\n");
         lessonName = lines[0];
@@ -86,13 +105,6 @@ async function addNewLink(bot, msg) {
     }
 
     lessonName = lessonName.slice(0, 30);
-
-
-    const existHW = await fetch("http://mediator-topaz.vercel.app/api/hw").then(
-        (data) => data.json()
-    );
-
-    const hwLinks = existHW["homeworks"];
 
     hwLinks.map((hw) => {
         if (hw.lessonName === lessonName) {
@@ -111,24 +123,16 @@ async function addNewLink(bot, msg) {
         link: link,
     };
 
-    await fetch("http://mediator-topaz.vercel.app/api/hw", {
-        method: "POST",
-        body: JSON.stringify(hw),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw', hw);
 
     await bot.deleteMessage(chatId, messageId);
     await bot.sendMessage(chatId, "Ссылка сделана, радуйтесь");
 }
 
 async function renderLinkMessage(bot, chatId) {
-    const existHW = await fetch("http://mediator-topaz.vercel.app/api/hw").then(
-        (data) => data.json()
-    );
-
-    const hwLinks = existHW["homeworks"];
+    const hwLinks = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
+        .then(res => res.data["homeworks"]);
 
     let editedText = `Ссылки на дз:\n`;
     await hwLinks.map((hw) => {
@@ -138,13 +142,12 @@ async function renderLinkMessage(bot, chatId) {
         );
     });
 
-    const varsData = await fetch(
-        "http://mediator-topaz.vercel.app/api/vars"
-    ).then((data) => data.json());
-    const linkMessageId = await varsData[0]["vars"]["LINK_MESSAGE_ID"];
+    const linkMessageId = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/api/vars')
+        .then(res => res.data[0]["vars"]["LINK_MESSAGE_ID"]);
 
     if (!linkMessageId) {
-        console.log("[LINK_MESSAGE_ID] is not exist now");
+        console.log("LINK_MESSAGE_ID is not exist now");
         return;
     }
 
@@ -159,13 +162,11 @@ async function deleteLink(bot, msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
-    const existHW = await fetch("http://mediator-topaz.vercel.app/api/hw").then(
-        (data) => data.json()
-    );
+    const hwLinks = await axios
+        .get("http://mediator-topaz.vercel.app/api/hw")
+        .then(res => res.data["homeworks"]);
 
-    const hwLinks = await existHW["homeworks"];
-
-    if (hwLinks.length === 0) {
+    if (!hwLinks.length) {
         bot.sendMessage(chatId, "Нету сохраненных ссылок, не в этот раз");
         bot.deleteMessage(chatId, messageId);
 
@@ -195,45 +196,24 @@ async function deleteLink(bot, msg) {
 }
 
 async function callbackDeleteLink(bot, callbackQuery) {
+    if (callbackQuery.data === "allLinkDeleteYes" || callbackQuery.data === "allLinkDeleteNo") return;
+
     const chatId = callbackQuery.message.chat.id;
     const messageId = callbackQuery.message.message_id;
     const lessonName = callbackQuery.data;
 
-    if (
-        lessonName === 'allLinkDeleteYes' ||
-        lessonName === 'allLinkDeleteNo' ||
-        lessonName === 'Extra Gay' ||
-        lessonName === 'Youtuber Sanek' ||
-        lessonName === 'Elecey'
-    ) {
-        await bot.deleteMessage(chatId, messageId);
-        return;
-    }
+    const hwLinks = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
+        .then(res => res.data["homeworks"]);
 
-    const existHW = await fetch("http://mediator-topaz.vercel.app/api/hw").then(
-        (data) => data.json()
-    );
-
-    const hwLinks = existHW["homeworks"];
     const deletedLink = hwLinks.find(link => link.lessonName === lessonName);
 
     await fs.writeFile('./assets/lastDeletedLink.json', JSON.stringify(deletedLink));
 
     if (hwLinks.length === 1) {
-        await fetch("http://mediator-topaz.vercel.app/api/hw/remove/all", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/remove/all');
     } else {
-        await fetch("http://mediator-topaz.vercel.app/api/hw/remove", {
-            method: "POST",
-            body: JSON.stringify({ lessonName: lessonName }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw/remove', { lessonName: lessonName });
     }
 
     await bot.deleteMessage(chatId, messageId);
@@ -247,19 +227,13 @@ async function returnLastHWLink(bot, msg) {
     const data = await fs.readFile('./assets/lastDeletedLink.json', 'utf-8') || '{}';
     const deletedLink = await JSON.parse(data);
 
-    if (typeof deletedLink.lessonName !== 'string') {
+    if (!deletedLink.lessonName) {
         await bot.deleteMessage(chatId, messageId);
         await bot.sendMessage(chatId, 'У меня пока что нету последнего удаленного сообщения, чтоб его вернуть(');
         return;
     }
 
-    await fetch("http://mediator-topaz.vercel.app/api/hw", {
-        method: "POST",
-        body: JSON.stringify(deletedLink),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw', deletedLink);
 
     await bot.deleteMessage(chatId, messageId);
     await bot.sendMessage(chatId, 'Последнее удаленное сообщение вернулось в строй');
@@ -294,16 +268,14 @@ function deleteAllLink(bot, msg) {
 
 async function callbackDeleteAllLink(bot, callbackQuery) {
     const userChoise = callbackQuery.data;
+    const chatId = callbackQuery.message.chat.id;
+    const messageId = callbackQuery.message.message_id;
 
     if (userChoise === "allLinkDeleteYes") {
-        await fetch("http://mediator-topaz.vercel.app/api/hw/remove/all", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        await bot.deleteMessage(chatId, messageId);
+        await axios.post("http://mediator-topaz.vercel.app/api/hw/remove/all");
     } else if (userChoise === "allLinkDeleteNo") {
-        console.log("User chose NO");
+        await bot.deleteMessage(chatId, messageId);
     }
 }
 

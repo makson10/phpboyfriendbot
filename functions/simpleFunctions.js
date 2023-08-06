@@ -1,13 +1,8 @@
+const axios = require('axios').default;
+const cheerio = require("cheerio");
 const roflArray = require("../assets/rofls");
 const memesLink = require("../assets/memesLink");
-const answerForUsers = require("../assets/answerForUsersKtoI");
-const cheerio = require("cheerio");
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
-
-
-function newFunction() {
-    return require("node-fetch");
-}
+// const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 function rofl(bot, msg) {
     const chatId = msg.chat.id;
@@ -31,47 +26,6 @@ function meme(bot, msg) {
     bot.sendPhoto(chatId, randomMeme);
 }
 
-function thisMeme(bot, msg) {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-
-    bot.deleteMessage(chatId, messageId);
-    bot.sendPhoto(chatId, memesLink[0]);
-}
-
-function neUmnichai(bot, msg) {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-    const messageToReply = msg.hasOwnProperty("reply_to_message")
-        ? msg.reply_to_message.message_id
-        : undefined;
-
-    const messageForUmniki = `Нет ничего утомительнее, чем присутствовать при том, как человек демонстрирует свой ум. В особенности, если ума нет.
-(С) Эрих Мария Ремарк`;
-
-    bot.deleteMessage(chatId, messageId);
-    bot.sendMessage(chatId, messageForUmniki, {
-        reply_to_message_id: messageToReply,
-    });
-}
-
-function ktoI(bot, msg) {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-    const senderUserName = msg.from.username;
-    const senderFirstName = msg.from.first_name;
-
-    const messageForUser = answerForUsers[senderUserName];
-
-    const message =
-        messageForUser !== undefined
-            ? `${senderFirstName} - это ${messageForUser}`
-            : answerForUsers["unknown"];
-
-    bot.deleteMessage(chatId, messageId);
-    bot.sendMessage(chatId, message);
-}
-
 function shock(bot, msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
@@ -82,23 +36,6 @@ function shock(bot, msg) {
 
     bot.deleteMessage(chatId, messageId);
     bot.sendMessage(chatId, "Нихуя себе", {
-        reply_to_message_id: replyMessageId,
-    });
-}
-
-function thanks(bot, msg) {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-
-    const replyMessageId = msg.hasOwnProperty("reply_to_message")
-        ? msg.reply_to_message.message_id
-        : undefined;
-
-    const message = `Ооо, спасибо, ${msg.from.username === "pidoprigora21" ? "любимая" : "любимый"
-        } ❤`;
-
-    bot.deleteMessage(chatId, messageId);
-    bot.sendMessage(chatId, message, {
         reply_to_message_id: replyMessageId,
     });
 }
@@ -131,55 +68,57 @@ async function getDocument(bot, msg) {
     });
 }
 
-async function compliment(bot, msg, match) {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-    const recipient = match[1];
+// async function compliment(bot, msg, match) {
+//     const chatId = msg.chat.id;
+//     const messageId = msg.message_id;
+//     const recipient = match[1];
 
-    if (recipient.slice(0, 1) !== '@') {
-        await bot.deleteMessage(chatId, messageId);
-        return;
-    }
+//     if (recipient.slice(0, 1) !== '@') {
+//         await bot.deleteMessage(chatId, messageId);
+//         return;
+//     }
 
 
-    const firstSiteMarkup = await fetch('https://pozdravok.com/pozdravleniya/lyubov/komplimenty/', {
-        headers: { 'Content-Type': 'text/plain; charset=UTF-8' }
-    })
-        .then(res => res.arrayBuffer())
-        .then(buffer => {
-            const decoder = new TextDecoder('windows-1251', { fatal: true });
-            const text = decoder.decode(buffer);
-            return text;
-        });
+//     const firstSiteMarkup = await axios.get('https://pozdravok.com/pozdravleniya/lyubov/komplimenty/', {
+//         headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
+//         responseType: 'arraybuffer'
+//     })
+//         .then(res => res.data)
+//         .then(buffer => {
+//             const decoder = new TextDecoder('windows-1251', { fatal: true });
+//             const text = decoder.decode(buffer);
+//             return text;
+//         });
 
-    const secondSiteMarkup = await fetch('https://pozdravok.com/pozdravleniya/lyubov/komplimenty/2.htm', {
-        headers: { 'Content-Type': 'text/plain; charset=UTF-8' }
-    })
-        .then(res => res.arrayBuffer())
-        .then(buffer => {
-            const decoder = new TextDecoder('windows-1251', { fatal: true });
-            const text = decoder.decode(buffer);
-            return text;
-        });
+//     const secondSiteMarkup = await axios.get('https://pozdravok.com/pozdravleniya/lyubov/komplimenty/2.htm', {
+//         headers: { "Content-Type": 'text/plain; charset=UTF-8' },
+//         responseType: 'arraybuffer'
+//     })
+//         .then(res => res.data)
+//         .then(buffer => {
+//             const decoder = new TextDecoder('windows-1251', { fatal: true });
+//             const text = decoder.decode(buffer);
+//             return text;
+//         });
 
-    const $ = cheerio.load(firstSiteMarkup);
-    const $$ = cheerio.load(secondSiteMarkup);
-    const allCompliment = [];
+//     const $ = cheerio.load(firstSiteMarkup);
+//     const $$ = cheerio.load(secondSiteMarkup);
+//     const allCompliment = [];
 
-    $('.sfst').each((i, elem) => {
-        allCompliment.push($(elem).text());
-    });
+//     $('.sfst').each((i, elem) => {
+//         allCompliment.push($(elem).text());
+//     });
 
-    $$('.sfst').each((i, elem) => {
-        allCompliment.push($(elem).text());
-    });
+//     $$('.sfst').each((i, elem) => {
+//         allCompliment.push($(elem).text());
+//     });
 
-    const randomNumber = Math.floor(Math.random() * allCompliment.length);
-    const messageToSend = `${recipient} ${allCompliment[randomNumber]}`;
+//     const randomNumber = Math.floor(Math.random() * allCompliment.length);
+//     const messageToSend = `${recipient} ${allCompliment[randomNumber]}`;
 
-    await bot.deleteMessage(chatId, messageId);
-    await bot.sendMessage(chatId, messageToSend);
-}
+//     await bot.deleteMessage(chatId, messageId);
+//     await bot.sendMessage(chatId, messageToSend);
+// }
 
 async function spam(bot, msg, match) {
     const chatId = msg.chat.id;
@@ -191,9 +130,9 @@ async function spam(bot, msg, match) {
     const dataArray = data.split(':');
     let victim;
 
-    const vars = await fetch("http://mediator-topaz.vercel.app/api/vars").then(
-        (data) => data.json()
-    );
+    const vars = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/api/vars')
+        .then(res => res.data);
 
     switch (dataArray[1]) {
         case 'maks':
@@ -227,5 +166,11 @@ async function spam(bot, msg, match) {
     await bot.deleteMessage(chatId, messageId);
 }
 
-module.exports = { rofl, meme, thisMeme, neUmnichai, ktoI, shock, thanks, say, getDocument, compliment, spam };
-
+module.exports = {
+    rofl,
+    meme,
+    shock,
+    say,
+    getDocument,
+    spam
+};
