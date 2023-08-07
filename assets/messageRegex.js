@@ -1,3 +1,3 @@
 automaticMessagePinRegex = /^(англ|хим|физ|био|зах укр|захист укр|инф|ист|история|алг|геогр|геом|геогр|всесв ист|геометрия|алгебра|английский|информатика|химия|физика|биология|мист|мистецтво) на /i
 
-module.exports = automaticMessagePinRegex
+module.exports = automaticMessagePinRegex;

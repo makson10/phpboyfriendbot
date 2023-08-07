@@ -1,14 +1,15 @@
+const bot = require('../bot');
 const axios = require('axios').default;
 
-function handleLessonSchedule(bot, msg) {
+function handleLessonSchedule(msg) {
     const messageText = msg.text;
 
-    pinLessonsMessage(bot, msg);
+    pinLessonsMessage(msg);
     const formatedData = formatDataToSend(messageText);
     sendDataToDB(formatedData);
 }
 
-function pinLessonsMessage(bot, msg) {
+function pinLessonsMessage(msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
@@ -64,7 +65,7 @@ async function sendDataToDB(data) {
     await axios.post(process.env.MEDIATOR_BASE_URL + '/api/lessons', data);
 }
 
-async function addLinksToSchedule(bot, msg) {
+async function addLinksToSchedule(msg) {
     const chatId = msg.chat.id;
     const text = msg.text;
 

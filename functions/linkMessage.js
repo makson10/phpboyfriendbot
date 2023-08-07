@@ -1,7 +1,9 @@
+const bot = require('../bot');
+const addNewLinkAnswers = require('../assets/addNewLinkAnswers');
 const axios = require('axios').default;
 const fs = require('fs/promises');
 
-async function setupLinkMessage(bot, msg) {
+async function setupLinkMessage(msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
@@ -42,7 +44,7 @@ async function setupLinkMessage(bot, msg) {
     });
 }
 
-async function addNewLink(bot, msg, command = true) {
+async function addNewLink(msg, command = true) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
     const replyMessage = msg.reply_to_message;
@@ -71,7 +73,11 @@ async function addNewLink(bot, msg, command = true) {
         };
 
         await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw', hw);
-        await bot.sendMessage(chatId, "Ссылка сделана, радуйтесь");
+
+        const randomBotAnswerIndex = Math.floor(Math.random() * addNewLinkAnswers.length);
+        const botAnswer = addNewLinkAnswers[randomBotAnswerIndex];
+
+        await bot.sendMessage(chatId, botAnswer);
 
         return;
     }
@@ -100,10 +106,7 @@ async function addNewLink(bot, msg, command = true) {
         lessonName = lines[0];
     }
 
-    if (messageParameter !== '') {
-        lessonName = messageParameter;
-    }
-
+    if (messageParameter !== '') lessonName = messageParameter;
     lessonName = lessonName.slice(0, 30);
 
     hwLinks.map((hw) => {
@@ -125,11 +128,15 @@ async function addNewLink(bot, msg, command = true) {
 
     await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw', hw);
 
+    const randomBotAnswerIndex = Math.floor(Math.random() * addNewLinkAnswers.length);
+    const botAnswer = addNewLinkAnswers[randomBotAnswerIndex];
+
     await bot.deleteMessage(chatId, messageId);
-    await bot.sendMessage(chatId, "Ссылка сделана, радуйтесь");
+    await bot.sendMessage(chatId, botAnswer);
+    await renderLinkMessage(chatId);
 }
 
-async function renderLinkMessage(bot, chatId) {
+async function renderLinkMessage(chatId) {
     const hwLinks = await axios
         .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
         .then(res => res.data["homeworks"]);
@@ -158,12 +165,12 @@ async function renderLinkMessage(bot, chatId) {
     });
 }
 
-async function deleteLink(bot, msg) {
+async function deleteLink(msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
     const hwLinks = await axios
-        .get("http://mediator-topaz.vercel.app/api/hw")
+        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
         .then(res => res.data["homeworks"]);
 
     if (!hwLinks.length) {
@@ -189,38 +196,49 @@ async function deleteLink(bot, msg) {
         ]);
     });
 
+    inlineKeyboard.inline_keyboard.push([
+        {
+            text: '❌',
+            callback_data: 'cancel',
+        },
+    ]);
+
     bot.deleteMessage(chatId, messageId);
     bot.sendMessage(chatId, "Выберите какую ссылку хотите удалить", {
         reply_markup: inlineKeyboard,
     });
 }
 
-async function callbackDeleteLink(bot, callbackQuery) {
-    if (callbackQuery.data === "allLinkDeleteYes" || callbackQuery.data === "allLinkDeleteNo") return;
-
+async function callbackDeleteLink(callbackQuery) {
     const chatId = callbackQuery.message.chat.id;
     const messageId = callbackQuery.message.message_id;
-    const lessonName = callbackQuery.data;
+    const choosenOption = callbackQuery.data;
+
+    if (choosenOption === "allLinkDeleteYes" || choosenOption === "allLinkDeleteNo") return;
+    if (choosenOption === 'cancel') {
+        return await bot.deleteMessage(chatId, messageId);
+    }
+
 
     const hwLinks = await axios
         .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
         .then(res => res.data["homeworks"]);
 
-    const deletedLink = hwLinks.find(link => link.lessonName === lessonName);
+    const deletedLink = hwLinks.find(link => link.lessonName === choosenOption);
 
     await fs.writeFile('./assets/lastDeletedLink.json', JSON.stringify(deletedLink));
 
     if (hwLinks.length === 1) {
         await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/remove/all');
     } else {
-        await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw/remove', { lessonName: lessonName });
+        await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw/remove', { lessonName: choosenOption });
     }
 
     await bot.deleteMessage(chatId, messageId);
-    await renderLinkMessage(bot, chatId);
+    await renderLinkMessage(chatId);
 }
 
-async function returnLastHWLink(bot, msg) {
+async function returnLastHWLink(msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
@@ -237,9 +255,10 @@ async function returnLastHWLink(bot, msg) {
 
     await bot.deleteMessage(chatId, messageId);
     await bot.sendMessage(chatId, 'Последнее удаленное сообщение вернулось в строй');
+    await renderLinkMessage(chatId);
 }
 
-function deleteAllLink(bot, msg) {
+async function deleteAllLink(msg) {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
@@ -260,13 +279,14 @@ function deleteAllLink(bot, msg) {
         one_time_keyboard: true,
     };
 
-    bot.deleteMessage(chatId, messageId);
-    bot.sendMessage(chatId, "Вы уверены, что хотите удалить все ссылки?", {
+    await bot.deleteMessage(chatId, messageId);
+    await bot.sendMessage(chatId, "Вы уверены, что хотите удалить все ссылки?", {
         reply_markup: inlineKeyboard,
     });
+    await renderLinkMessage(chatId);
 }
 
-async function callbackDeleteAllLink(bot, callbackQuery) {
+async function callbackDeleteAllLink(callbackQuery) {
     const userChoise = callbackQuery.data;
     const chatId = callbackQuery.message.chat.id;
     const messageId = callbackQuery.message.message_id;
