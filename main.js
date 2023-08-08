@@ -11,7 +11,7 @@ const {
     deleteLink,
     callbackDeleteLink,
     returnLastHWLink,
-    deleteAllLink,
+    deleteAllLinks,
     callbackDeleteAllLink
 } = require('@functions/linkMessage');
 const shouldHandleMessage = require('@functions/shouldHandleMessage');
@@ -69,15 +69,6 @@ bot.onText(/^\/add_new_link/, async (msg) => {
     await addNewLink(msg);
 });
 
-//* For dev:
-// bot.onText(/^\/render_link_message/, async (msg) => {
-//     const chatId = msg.chat.id;
-//     const messageId = msg.message_id;
-
-//     await renderLinkMessage(chatId);
-//     await bot.deleteMessage(chatId, messageId);
-// });
-
 bot.onText(/^\/delete_link/, async (msg) => {
     if (!isMessageFromGroup(msg)) return;
     await deleteLink(msg);
@@ -90,7 +81,7 @@ bot.onText(/^\/return_last_hw_link/, async (msg) => {
 
 bot.onText(/^\/delete_all_links/, async (msg) => {
     if (!isMessageFromGroup(msg)) return;
-    await deleteAllLink(msg);
+    await deleteAllLinks(msg);
 });
 
 bot.on("callback_query", async (callbackQuery) => {
