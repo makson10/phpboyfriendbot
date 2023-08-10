@@ -1,15 +1,8 @@
 const bot = require('@/bot');
-
-const getUsersChatIds = async () => {
-    const vars = await axios
-        .get(process.env.MEDIATOR_BASE_URL + '/api/vars')
-        .then(res => res.data[0]['vars']);
-
-    return vars;
-}
+const { getVars } = require('@functions/dbRequestFunctions');
 
 const determineVictimChatId = async (vitcimName) => {
-    const vars = await getUsersChatIds();
+    const vars = await getVars();
 
     switch (vitcimName) {
         case 'maks':

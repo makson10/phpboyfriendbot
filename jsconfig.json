@@ -4,7 +4,8 @@
 		"paths": {
 			"@/*": ["./*"],
 			"@functions/*": ["./functions/*"],
-			"@assets/*": ["./assets/*"]
+			"@assets/*": ["./assets/*"],
+			"@emitters/*": ["./emitters/*"]
 		}
 	},
 	"exclude": ["node_modules"]

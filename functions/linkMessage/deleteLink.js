@@ -1,15 +1,7 @@
 const bot = require('@/bot');
-const axios = require('axios').default;
+const { getHWLinks } = require('@functions/dbRequestFunctions');
 
-const getHwLinks = async () => {
-    const hwLinks = await axios
-        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
-        .then(res => res.data["homeworks"]);
-
-    return hwLinks;
-};
-
-const checkIsHwLinkExist = (hwLinks) => {
+const checkIsHwLinkExist = (hwLinks, chatId, messageId) => {
     if (!hwLinks.length) {
         bot.sendMessage(chatId, "Нету сохраненных ссылок, не в этот раз");
         bot.deleteMessage(chatId, messageId);
@@ -54,8 +46,8 @@ const deleteLink = async (msg) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
-    const hwLinks = await getHwLinks();
-    if (!checkIsHwLinkExist(hwLinks)) return;
+    const hwLinks = await getHWLinks();
+    if (!checkIsHwLinkExist(hwLinks, chatId, messageId)) return;
 
     const keyboard = await formDeleteMessageKeyboard(hwLinks);
     await sendDeleteMessage(chatId, messageId, keyboard);

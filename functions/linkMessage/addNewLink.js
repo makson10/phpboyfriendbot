@@ -2,14 +2,7 @@ const bot = require('@/bot');
 const axios = require('axios').default;
 const addNewLinkAnswers = require('@assets/addNewLinkAnswers');
 const renderLinkMessage = require('./renderLinkMessage');
-
-const getHWLinks = async () => {
-    const hwLinks = await axios
-        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
-        .then(res => res.data["homeworks"]);
-
-    return hwLinks;
-};
+const { getHWLinks } = require('@functions/dbRequestFunctions');
 
 const getCommandParameters = (messageText) => {
     let messageParameter = messageText.replace('/add_new_link', '').trim();
@@ -92,19 +85,24 @@ const addLessonTitleSufix = async (lessonTitle) => {
     } else return lessonTitle;
 };
 
-const formHwLink = (chatId, messageId) => {
+const correctChatIdForLink = (chatId) => {
+    const correctChatId = chatId.toString();
+    return correctChatId.slice(4);
+};
+
+const formHwLink = (msg) => {
+    const chatId = correctChatIdForLink(msg.chat.id);
+    const messageId = msg.reply_to_message ? msg.reply_to_message.message_id : msg.message_id;
+
     const link = `https://t.me/c/${chatId}/${messageId}`;
     return link;
 };
 
 const formNewHW = async (msg, wasInvokedFromCommand) => {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-
     const lessonTitle = await formHwTitle(msg, wasInvokedFromCommand);
     if (!lessonTitle) return;
 
-    const link = formHwLink(chatId, messageId);
+    const link = formHwLink(msg);
 
     const hw = {
         lessonTitle: lessonTitle,
@@ -115,7 +113,7 @@ const formNewHW = async (msg, wasInvokedFromCommand) => {
 };
 
 const storeNewHWInServer = async (hw) => {
-    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw', hw);
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/addHw', hw);
 };
 
 const sendRandomAnswer = async (chatId, messageId) => {

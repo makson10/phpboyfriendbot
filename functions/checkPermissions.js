@@ -1,5 +1,5 @@
 const isMessageFromGroup = ({ chat: { type } }) => {
-    return type === "group" || type === "supergroup";
+    return type === "supergroup";
 }
 
 const isMessageFromSuperAdmin = ({ from: { username } }) => {

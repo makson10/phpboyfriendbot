@@ -1,33 +1,31 @@
 const bot = require('@/bot');
-const axios = require('axios').default;
+const { getHWLinks, getLinkMessageId } = require('@functions/dbRequestFunctions');
 
-const renderLinkMessage = async (chatId) => {
-    const hwLinks = await axios
-        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
-        .then(res => res.data["homeworks"]);
-
-    let editedText = `Ссылки на дз:\n`;
+const formNewLinkMessageText = async (hwLinks) => {
+    let newText = 'Ссылки на дз:\n';
     await hwLinks.map((hw) => {
-        editedText = editedText.concat(`-------------------\n`);
-        editedText = editedText.concat(
-            `<a href="${hw.link}">${hw.lessonTitle}</a>\n`
-        );
+        newText += '-------------------\n';
+        newText += `<a href="${hw.link}">${hw.lessonTitle}</a>\n`;
     });
 
-    const linkMessageId = await axios
-        .get(process.env.MEDIATOR_BASE_URL + '/api/vars')
-        .then(res => res.data[0]["vars"]["LINK_MESSAGE_ID"]);
+    return newText;
+};
 
-    if (!linkMessageId) {
-        console.log("LINK_MESSAGE_ID is not exist now");
-        return;
-    }
-
-    await bot.editMessageText(editedText, {
+const updateLinkMessage = async (chatId, linkMessageId, newText) => {
+    await bot.editMessageText(newText, {
         parse_mode: "HTML",
         chat_id: chatId,
         message_id: linkMessageId,
     });
+};
+
+const renderLinkMessage = async (chatId) => {
+    const hwLinks = await getHWLinks();
+    const linkMessageId = await getLinkMessageId();
+    if (!linkMessageId) return;
+
+    const newLinkMessageText = await formNewLinkMessageText(hwLinks);
+    await updateLinkMessage(chatId, linkMessageId, newLinkMessageText);
 }
 
 module.exports = renderLinkMessage;

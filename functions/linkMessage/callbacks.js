@@ -1,38 +1,13 @@
 const bot = require('@/bot');
 const axios = require('axios').default;
-const fs = require('fs/promises');
 const renderLinkMessage = require('./renderLinkMessage');
 
-const getHwLinks = async () => {
-    const hwLinks = await axios
-        .get(process.env.MEDIATOR_BASE_URL + '/api/hw')
-        .then(res => res.data["homeworks"]);
-
-    return hwLinks;
+const deleteHw = async (lessonTitle) => {
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/delete', { lessonTitle });
 };
 
-const getDeletedLink = async (hwLinks, deletedLessonTitle) => {
-    return hwLinks.find(link => link.lessonTitle === deletedLessonTitle);
-};
-
-const sendRequestToDeleteAllHwLinks = async () => {
-    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw/remove/all');
-};
-
-const sendRequestToDeleteSpecificHwLinks = async (lessonTitle) => {
-    await axios.post(process.env.MEDIATOR_BASE_URL + '/api/hw/remove', { lessonTitle });
-};
-
-const deleteLinkFromServer = async (linksAmount, linkTitle) => {
-    if (linksAmount === 1) {
-        await sendRequestToDeleteAllHwLinks();
-    } else {
-        await sendRequestToDeleteSpecificHwLinks(linkTitle);
-    }
-};
-
-const updateLastDeletedLink = async (deletedLink) => {
-    await fs.writeFile('./assets/lastDeletedLink.json', JSON.stringify(deletedLink));
+const deleteAllLinksFromServer = async () => {
+    await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/deleteAllHw');
 };
 
 const callbackDeleteLink = async (callbackQuery) => {
@@ -40,17 +15,14 @@ const callbackDeleteLink = async (callbackQuery) => {
     const messageId = callbackQuery.message.message_id;
     const choosenOption = callbackQuery.data;
 
+    await bot.deleteMessage(chatId, messageId);
+
     if (choosenOption === 'allLinkDeleteYes' || choosenOption === 'allLinkDeleteNo' || choosenOption === 'cancel') {
-        return await bot.deleteMessage(chatId, messageId);
+        return;
     }
 
-    const hwLinks = await getHwLinks();
-    const deletedLink = await getDeletedLink(hwLinks, choosenOption);
-
-    await updateLastDeletedLink(deletedLink);
-    await deleteLinkFromServer(hwLinks.length, choosenOption);
-
-    await bot.deleteMessage(chatId, messageId);
+    await deleteHw(choosenOption);
+    await renderLinkMessage(chatId);
 }
 
 const callbackDeleteAllLink = async (callbackQuery) => {
@@ -58,7 +30,7 @@ const callbackDeleteAllLink = async (callbackQuery) => {
     const chatId = callbackQuery.message.chat.id;
 
     if (userChoise === "allLinkDeleteYes") {
-        await sendRequestToDeleteAllHwLinks();
+        await deleteAllLinksFromServer();
         await renderLinkMessage(chatId);
     }
 }
