@@ -1,3 +1,4 @@
+const TOKEN = process.env.TOKEN;
 const express = require('express');
 const bodyParser = require('body-parser');
 
