@@ -5,7 +5,7 @@ const sendKillSticker = async (msg) => {
   const messageId = msg.message_id;
   const stickerFileId = "CAACAgIAAxkBAAIZJmTVSBxtUUnqk41L5j5NmDjQtPyBAAIrFAACt5nIS_UUZ5bBuI9VMAQ";
 
-  const messageToReply = msg.hasOwnProperty("reply_to message")
+  const messageToReply = msg.hasOwnProperty("reply_to_message")
       ? msg.reply_to_message.message_id
       : undefined;
 
