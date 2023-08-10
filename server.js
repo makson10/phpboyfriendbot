@@ -1,4 +1,5 @@
 const TOKEN = process.env.TOKEN;
+const bot = require('@/bot');
 const express = require('express');
 const bodyParser = require('body-parser');
 
