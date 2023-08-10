@@ -20,12 +20,11 @@ const formRoflsArray = (pageMarkup) => {
         console.log(elementText);
 
         $('h4').remove();
-//         const editedRofl = elementText.replaceAll('— ', `
-// — `).replaceAll('– ', `
-// – `);
+        const editedRofl = elementText.replaceAll('— ', `
+— `).replaceAll('– ', `
+– `);
 
-        // rofls.push(editedRofl);
-        rofls.push(elementText);
+        rofls.push(editedRofl);
     });
 
     return rofls;
