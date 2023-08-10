@@ -11,7 +11,7 @@ const sendKillSticker = async (msg) => {
 
   await bot.deleteMessage(chatId, messageId);
   await bot.sendSticker(chatId, stickerFileId, {
-    reply_to_message: messageToReply,
+    reply_to_message_id: messageToReply,
   });
 };
 
