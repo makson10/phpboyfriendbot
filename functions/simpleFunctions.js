@@ -4,6 +4,7 @@ const shock = require('./simpleFunctions/shock');
 const say = require('./simpleFunctions/say');
 const sendStikerAfterGetHW = require('./simpleFunctions/sendStikerAfterGetHW');
 const spam = require('./simpleFunctions/spam');
+const sendKillSticker = require('./simpleFunctions/kill');
 
 module.exports = {
     rofl,
@@ -11,5 +12,6 @@ module.exports = {
     shock,
     say,
     sendStikerAfterGetHW,
-    spam
+    spam,
+    sendKillSticker,
 };
