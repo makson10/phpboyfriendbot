@@ -12,6 +12,12 @@ const getPageWithRoflsMarkup = async () => {
     return markup;
 };
 
+const replaceAllTabs = (text) => {
+    return text.split('— ').join(`
+— `).split('– ').join(`
+– `);
+};
+
 const formRoflsArray = (pageMarkup) => {
     const $ = cheerio.load(pageMarkup);
     const rofls = [];
@@ -19,13 +25,10 @@ const formRoflsArray = (pageMarkup) => {
     $('.sue-panel-content').each((i, elem) => {
         const element = $(elem);
         const elementText = element.text();
-        console.log(elementText);
 
         $('h4').remove();
-        const editedRofl = elementText.replaceAll('— ', `
-— `).replaceAll('– ', `
-– `);
 
+        const editedRofl = replaceAllTabs(elementText);
         rofls.push(editedRofl);
     });
 
