@@ -2,6 +2,8 @@ const bot = require('@/bot');
 const cheerio = require("cheerio");
 const axios = require('axios').default;
 
+console.log(process.version);
+
 const getPageWithRoflsMarkup = async () => {
     const markup = await axios.get('https://etnosvit.com/anekdoty.html', {
         headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
