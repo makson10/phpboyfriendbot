@@ -74,7 +74,7 @@ const formHwTitle = async (msg, wasInvokedFromCommand) => {
 
 const addLessonTitleSufix = async (lessonTitle) => {
     const hwLinks = await getHWLinks();
-    if (!hwLinks.length) return lessonTitle;
+    if (!hwLinks || !hwLinks.length) return lessonTitle;
 
     const linksWithSameName = await hwLinks.map(hwLink => {
         if (hwLink.lessonTitle.includes(lessonTitle)) return hwLink;

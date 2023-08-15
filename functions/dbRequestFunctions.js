@@ -3,7 +3,7 @@ const axios = require('axios').default;
 const getHWLinks = async () => {
     const hwLinks = await axios
         .get(process.env.MEDIATOR_BASE_URL + '/hw')
-        .then(res => res.data["homeworks"]);
+        .then(res => res.data);
 
     return hwLinks;
 };
