@@ -6,5 +6,5 @@ bot.onText(/^\/meme/, (msg) => meme(msg));
 bot.onText(/^\/shock/, (msg) => shock(msg));
 bot.onText(/^\/kill/, (msg) => sendKillSticker(msg));
 bot.onText(/^\/say (.+)/gms, (msg, match) => say(msg, match));
-bot.onText(/^\/spam (.+)/, (msg, match) => spam(msg, match)); 
+bot.onText(/^\/spam (.+)/, (msg, match) => spam(msg, match));
 bot.on("document", (msg) => sendStikerAfterGetHW(msg));
