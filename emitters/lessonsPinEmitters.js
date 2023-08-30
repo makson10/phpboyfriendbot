@@ -7,7 +7,7 @@ bot.onText(/^\Уроки на /, async (msg) => {
     await handleLessonSchedule(msg);
 });
 
-bot.onText(/^\/add_links/, async (msg) => {
+bot.onText(/^\/add_links/, async (msg) => { // make /^\/add_links (.+)/gmi later
     if (!shouldHandleMessage(msg)) return;
     await addLinksToSchedule(msg);
 });
