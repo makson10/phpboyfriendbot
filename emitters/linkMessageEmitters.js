@@ -13,38 +13,31 @@ const {
 } = require('@functions/linkMessage');
 
 bot.on('message', async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await checkShouldCreateNewLinkMessage(msg);
+    if (!isMessageFromGroup(msg)) await checkShouldCreateNewLinkMessage(msg);
 });
 
 bot.onText(automaticMessagePinRegex, async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await addNewLink(msg, false);
+    if (!isMessageFromGroup(msg)) await addNewLink(msg, false);
 });
 
 bot.onText(/^\/setup_new_link_message/, async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await setupNewLinkMessage(msg);
+    if (!isMessageFromGroup(msg)) await setupNewLinkMessage(msg);
 });
 
 bot.onText(/^\/add_new_link/, async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await addNewLink(msg);
+    if (!isMessageFromGroup(msg)) await addNewLink(msg);
 });
 
 bot.onText(/^\/delete_link/, async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await deleteLink(msg);
+    if (!isMessageFromGroup(msg)) await deleteLink(msg);
 });
 
 bot.onText(/^\/return_last_hw_link/, async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await returnLastHWLink(msg);
+    if (!isMessageFromGroup(msg)) await returnLastHWLink(msg);
 });
 
 bot.onText(/^\/delete_all_links/, async (msg) => {
-    if (!isMessageFromGroup(msg)) return;
-    await deleteAllLinks(msg);
+    if (!isMessageFromGroup(msg)) await deleteAllLinks(msg);
 });
 
 bot.on("callback_query", async (callbackQuery) => {

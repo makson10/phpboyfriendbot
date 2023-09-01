@@ -3,11 +3,9 @@ const shouldHandleMessage = require('@functions/shouldHandleMessage');
 const { handleLessonSchedule, addLinksToSchedule } = require('@functions/lessonsPin');
 
 bot.onText(/^\Уроки на /, async (msg) => {
-    if (!shouldHandleMessage(msg)) return;
-    await handleLessonSchedule(msg);
+    if (!shouldHandleMessage(msg)) await handleLessonSchedule(msg);
 });
 
-bot.onText(/^\/add_links/, async (msg) => { // make /^\/add_links (.+)/gmi later
-    if (!shouldHandleMessage(msg)) return;
-    await addLinksToSchedule(msg);
+bot.onText(/^\/add_links/, async (msg) => {
+    if (!shouldHandleMessage(msg)) await addLinksToSchedule(msg);
 });
