@@ -1,5 +1,5 @@
 const bot = require('@/bot');
-const { getHWLinks, getLinkMessageId } = require('@functions/dbRequestFunctions');
+const { getHWLinks, getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const formNewLinkMessageText = async (hwLinks) => {
     let newText = 'Ссылки на дз:\n';

@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-app.post(`/${TOKEN}`, (req, res) => {
+app.post('/' + TOKEN, (req, res) => {
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });

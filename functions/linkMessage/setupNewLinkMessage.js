@@ -1,6 +1,6 @@
 const bot = require('@/bot');
 const axios = require('axios').default;
-const { getHWLinks, getLinkMessageId } = require('@functions/dbRequestFunctions');
+const { getHWLinks, getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const updateDataAboutLinkMessage = async (messageId) => {
     await axios.post(

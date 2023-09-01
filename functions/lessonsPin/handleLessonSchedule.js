@@ -12,14 +12,14 @@ const formScheduleToSend = (text) => {
     const schedule = {};
 
     const lines = text.split("\n");
-    schedule["dayTitle"] = lines[0];
+    schedule.dayTitle = lines[0];
 
     const lessons = lines.slice(1);
     const splitedLessons = lessons.map((lesson) => {
         return lesson.split(" - ");
     });
 
-    schedule["lessons"] = splitedLessons.map((lesson) => {
+    schedule.lessons = splitedLessons.map((lesson) => {
         const timeData = lesson[0].split(":");
 
         const firstLessonTitleLetter = lesson[1].slice(0, 1).toUpperCase();

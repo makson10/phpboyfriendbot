@@ -1,5 +1,5 @@
 const bot = require('@/bot');
-const { getHWLinks } = require('@functions/dbRequestFunctions');
+const { getHWLinks } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const checkIsHwLinkExist = (hwLinks, chatId, messageId) => {
     if (!hwLinks.length) {

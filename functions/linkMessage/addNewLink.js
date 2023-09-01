@@ -2,7 +2,7 @@ const bot = require('@/bot');
 const axios = require('axios').default;
 const addNewLinkAnswers = require('@assets/addNewLinkAnswers');
 const renderLinkMessage = require('./renderLinkMessage');
-const { getHWLinks } = require('@functions/dbRequestFunctions');
+const { getHWLinks } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const getCommandParameters = (messageText) => {
     let messageParameter = messageText.replace('/add_new_link', '').trim();
@@ -116,8 +116,8 @@ const storeNewHWInServer = async (hw) => {
     await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/addHw', hw);
 };
 
-const sendRandomAnswer = async (chatId, messageId) => {
-    await bot.deleteMessage(chatId, messageId);
+const sendRandomAnswer = async (chatId, messageId, wasInvokedFromCommand) => {
+    if (wasInvokedFromCommand) await bot.deleteMessage(chatId, messageId);
 
     const randomBotAnswerIndex = Math.floor(Math.random() * addNewLinkAnswers.length);
     const botAnswer = addNewLinkAnswers[randomBotAnswerIndex];
@@ -134,7 +134,7 @@ const addNewLink = async (msg, wasInvokedFromCommand = true) => {
 
     await storeNewHWInServer(newHW);
 
-    await sendRandomAnswer(chatId, messageId);
+    await sendRandomAnswer(chatId, messageId, wasInvokedFromCommand);
     await renderLinkMessage(chatId);
 }
 

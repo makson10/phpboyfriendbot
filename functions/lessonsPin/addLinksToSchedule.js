@@ -1,14 +1,17 @@
 const bot = require('@/bot');
 const axios = require('axios').default;
 
-const formLinksToSend = (text) => {
-    const lines = text.split("\n");
-    const lessons = lines.slice(1);
+const formLinksToSend = (linksList) => {
+    const links = linksList.split('\n');
 
-    const splitedLinks = lessons.map((lesson) => {
-        return lesson.split(" - ");
+    const splitedLinks = links.map((link) => {
+        if (link.slice(0, 3) === 'http') {
+            return link;
+        }
+
+        return link.split(" - ");
     });
-
+    
     return splitedLinks;
 }
 
@@ -18,9 +21,9 @@ const sendNewLinksToServer = async (newLinks) => {
 
 const addLinksToSchedule = async (msg) => {
     const chatId = msg.chat.id;
-    const text = msg.text;
+    const linksList = msg.text.replace('/add_links', '').trim();
 
-    const links = formLinksToSend(text);
+    const links = formLinksToSend(linksList);
     await sendNewLinksToServer(links);
     await bot.sendMessage(chatId, "Ссылки на уроки были добавлены!");
 }

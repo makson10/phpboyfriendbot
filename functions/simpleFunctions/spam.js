@@ -1,5 +1,5 @@
 const bot = require('@/bot');
-const { getVars } = require('@functions/dbRequestFunctions');
+const { getVars } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const determineVictimChatId = async (vitcimName) => {
     const vars = await getVars();

@@ -1,5 +1,5 @@
 const setupNewLinkMessage = require('./setupNewLinkMessage');
-const { getLinkMessageId } = require('@functions/dbRequestFunctions');
+const { getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const checkShouldCreateNewLinkMessage = async (msg) => {
     const messageId = msg.message_id;

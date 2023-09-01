@@ -10,9 +10,8 @@ const sendErrorMessageToUser = (chatId, messageId) => {
 }
 
 const shouldHandleMessage = (msg) => {
-    if (!isMessageFromGroup(msg) && !isMessageFromSuperAdmin(msg)) {
-        sendErrorMessageToUser(msg.chat.id, msg.message_id);
-    } else return true;
+    if (isMessageFromGroup(msg) || isMessageFromSuperAdmin(msg)) return true;
+    else sendErrorMessageToUser(msg.chat.id, msg.message_id);
 }
 
 module.exports = shouldHandleMessage;
