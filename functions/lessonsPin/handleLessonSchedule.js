@@ -45,12 +45,21 @@ const sendScheduleToServer = async (newLessonSchedule) => {
     await axios.post(process.env.MEDIATOR_BASE_URL + '/lessons/updateLessons', newLessonSchedule);
 }
 
+const updateLessonScheduleMessageId = async (messageId) => {
+    await axios.post(
+        process.env.MEDIATOR_BASE_URL + '/vars/updateLessonScheduleMessageId',
+        { newLessonScheduleMessageId: messageId }
+    );
+}
+
 const handleLessonSchedule = async (msg) => {
+    const messageId = msg.message_id;
     const messageText = msg.text;
 
     pinLessonScheduleMessage(msg);
     const schedule = formScheduleToSend(messageText);
     sendScheduleToServer(schedule);
+    updateLessonScheduleMessageId(messageId);
 }
 
 module.exports = handleLessonSchedule;
