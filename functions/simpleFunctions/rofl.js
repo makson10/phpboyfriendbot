@@ -47,7 +47,7 @@ const rofl = async (msg) => {
     const roflToSend = chooseRoflToSend(rofls);
 
     await bot.deleteMessage(chatId, messageId);
-    await bot.sendMessage(chatId, roflToSend, { parse_mode: 'Markdown' });
+    await bot.sendMessage(chatId, roflToSend, { parse_mode: 'Markdown', disable_notification: true });
 }
 
 module.exports = rofl;

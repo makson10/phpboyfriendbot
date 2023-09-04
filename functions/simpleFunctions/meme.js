@@ -13,7 +13,7 @@ const meme = (msg) => {
     const memeToSend = chooseRandomMeme(memesLink);
 
     bot.deleteMessage(chatId, messageId);
-    bot.sendPhoto(chatId, memeToSend);
+    bot.sendPhoto(chatId, memeToSend, { disable_notification: true });
 }
 
 module.exports = meme;

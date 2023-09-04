@@ -28,6 +28,7 @@ const sendStikerAfterGetHW = async (msg) => {
 
     bot.sendSticker(chatId, stickerToSend, {
         reply_to_message_id: messageId,
+        disable_notification: true,
     });
 }
 
