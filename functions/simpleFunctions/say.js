@@ -1,6 +1,6 @@
 const bot = require('@/bot');
 
-const say = (msg, match) => {
+const say = async (msg, match) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
     const messageToSay = match[1];
@@ -9,9 +9,10 @@ const say = (msg, match) => {
         ? msg.reply_to_message.message_id
         : undefined;
 
-    bot.deleteMessage(chatId, messageId);
-    bot.sendMessage(chatId, messageToSay, {
-        reply_to_message_id: messageToReply
+    await bot.deleteMessage(chatId, messageId);
+    await bot.sendMessage(chatId, messageToSay, {
+        reply_to_message_id: messageToReply,
+        disable_notification: true,
     });
 }
 

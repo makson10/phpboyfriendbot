@@ -20,11 +20,16 @@ bot.onText(automaticMessagePinRegex, async (msg) => {
     if (isMessageFromGroup(msg)) await addNewLink(msg, false);
 });
 
+bot.on('photo', async (msg) => {
+    if (isMessageFromGroup(msg) && automaticMessagePinRegex.test(msg.caption)) await addNewLink(msg, false);
+});
+
+bot.on('document', async (msg) => {
+    if (isMessageFromGroup(msg) && automaticMessagePinRegex.test(msg.caption)) await addNewLink(msg, false);
+});
+
 bot.onText(/^\/setup_new_link_message/, async (msg) => {
-    if (isMessageFromGroup(msg)) {
-        console.log('fuck');
-        await setupNewLinkMessage(msg);
-    }
+    if (isMessageFromGroup(msg)) await setupNewLinkMessage(msg);
 });
 
 bot.onText(/^\/add_new_link/, async (msg) => {

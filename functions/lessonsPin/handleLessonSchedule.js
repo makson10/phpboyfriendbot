@@ -1,14 +1,16 @@
 const bot = require('@/bot');
+const { isMessageFromGroup } = require('../handleFunction/checkPermissions');
 const axios = require('axios').default;
 
-const pinLessonScheduleMessage = (msg) => {
+
+const pinLessonScheduleMessage = async (msg) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
-    bot.pinChatMessage(chatId, messageId, { disable_notification: true });
+    await bot.pinChatMessage(chatId, messageId, { disable_notification: true });
 }
 
-const formScheduleToSend = (text) => {
+const formScheduleToSend = async (text) => {
     const schedule = {};
 
     const lines = text.split("\n");
@@ -56,10 +58,14 @@ const handleLessonSchedule = async (msg) => {
     const messageId = msg.message_id;
     const messageText = msg.text;
 
-    pinLessonScheduleMessage(msg);
-    const schedule = formScheduleToSend(messageText);
-    sendScheduleToServer(schedule);
-    updateLessonScheduleMessageId(messageId);
+    const schedule = await formScheduleToSend(messageText);
+    await sendScheduleToServer(schedule);
+
+    if (isMessageFromGroup(msg)) {
+        await pinLessonScheduleMessage(msg);
+        await updateLessonScheduleMessageId(messageId);
+    }
 }
+
 
 module.exports = handleLessonSchedule;

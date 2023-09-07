@@ -54,7 +54,7 @@ const determineLessonTitleFromReplyMessage = (messageParameter, replyMessage) =>
 
 const formHwTitle = async (msg, wasInvokedFromCommand) => {
     const replyMessage = msg.reply_to_message;
-    const messageText = msg.text;
+    const messageText = msg.caption ? msg.caption : msg.text;
 
     const messageParameter = getCommandParameters(messageText);
     let lessonTitle;

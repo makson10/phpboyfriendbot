@@ -7,7 +7,7 @@ const checkShouldCreateNewLinkMessage = async (msg) => {
 
     const linkMessageId = await getLinkMessageId();
 
-    if (messageId >= linkMessageId + 280) {
+    if (messageId >= linkMessageId + 590) {
         await setupNewLinkMessage(msg, false);
     }
 }

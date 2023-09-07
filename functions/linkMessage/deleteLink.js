@@ -28,7 +28,7 @@ const formDeleteMessageKeyboard = async (hwLinks) => {
     keyboard.inline_keyboard.push([
         {
             text: '❌',
-            callback_data: 'cancel',
+            callback_data: 'deleteLink_cancel',
         },
     ]);
 

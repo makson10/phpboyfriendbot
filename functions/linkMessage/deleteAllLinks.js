@@ -6,11 +6,11 @@ const formDeleteMessageKeyboard = () => {
             [
                 {
                     text: "Да",
-                    callback_data: "allLinkDeleteYes",
+                    callback_data: "deleteLink_deleteYes",
                 },
                 {
                     text: "Нет",
-                    callback_data: "allLinkDeleteNo",
+                    callback_data: "deleteLink_deleteNo",
                 },
             ],
         ],
