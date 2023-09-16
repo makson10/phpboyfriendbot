@@ -9,7 +9,8 @@ const {
     callbackDeleteLink,
     returnLastHWLink,
     deleteAllLinks,
-    callbackDeleteAllLink
+    callbackDeleteAllLink,
+    getTestAnswers
 } = require('@functions/linkMessage');
 
 bot.on('message', async (msg) => {
@@ -51,4 +52,12 @@ bot.onText(/^\/delete_all_links/, async (msg) => {
 bot.on("callback_query", async (callbackQuery) => {
     await callbackDeleteLink(callbackQuery);
     await callbackDeleteAllLink(callbackQuery);
+});
+
+bot.onText(/^(?!.*\bget_test_answers\b)(?=.*\bnaurok\b)(?=.*\bcomplete\b).*/, async (msg) => {
+    await getTestAnswers(msg, msg.text, false);
+});
+
+bot.onText(/^\/get_test_answers (.+)/, async (msg, match) => {
+    await getTestAnswers(msg, match[1]);
 });
