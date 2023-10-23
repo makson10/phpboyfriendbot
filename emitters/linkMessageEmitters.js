@@ -10,7 +10,8 @@ const {
     returnLastHWLink,
     deleteAllLinks,
     callbackDeleteAllLink,
-    getTestAnswers
+    getTestAnswers,
+    renderLinkMessage,
 } = require('@functions/linkMessage');
 
 bot.on('message', async (msg) => {
@@ -42,7 +43,10 @@ bot.onText(/^\/delete_link/, async (msg) => {
 });
 
 bot.onText(/^\/return_last_hw_link/, async (msg) => {
-    if (isMessageFromGroup(msg)) await returnLastHWLink(msg);
+    if (!isMessageFromGroup(msg)) return;
+
+    await returnLastHWLink(msg);
+    await renderLinkMessage(msg.chat.id);
 });
 
 bot.onText(/^\/delete_all_links/, async (msg) => {

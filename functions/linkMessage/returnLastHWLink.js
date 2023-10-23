@@ -1,6 +1,5 @@
 const bot = require('@/bot');
 const axios = require('axios').default;
-const renderLinkMessage = require('./renderLinkMessage');
 
 const sendReturnRequestToServer = async () => {
     const result = await axios
@@ -18,7 +17,6 @@ const returnLastHWLink = async (msg) => {
     const result = await sendReturnRequestToServer();
 
     if (result.ok) {
-        await renderLinkMessage(chatId);
         await bot.sendMessage(chatId, 'Последнее удаленное сообщение вернулось в строй');
     } else {
         await bot.sendMessage(chatId, 'Удаленных ссылков в истории не оказалось');

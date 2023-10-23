@@ -1,11 +1,37 @@
 const bot = require('@/bot');
 const { getHWLinks, getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
 
+const dateRegex = /[0-3][0-9].[0-1][0-9]/gm;
+
 const formNewLinkMessageText = async (hwLinks) => {
     let newText = 'Ссылки на дз:\n';
-    await hwLinks.map((hw) => {
-        newText += '-------------------\n';
+    newText += '-------------------\n';
+
+    await hwLinks.map((hw, index) => {
+        const hwTitle = hw.lessonTitle;
+
         newText += `<a href="${hw.link}">${hw.lessonTitle}</a>\n`;
+
+        if (hwLinks.length === index + 1) return;
+
+        const nextHwTitle = hwLinks[index + 1].lessonTitle;
+
+        if (!hwTitle.match(dateRegex) || !nextHwTitle.match(dateRegex)) {
+            newText += '-------------------\n';
+            return;
+        }
+
+        const homeworkDate = hwTitle.match(dateRegex);
+        let [homeworkDay, homeworkMonth] = homeworkDate[0].split('.');
+        [homeworkDay, homeworkMonth] = [+homeworkDay, +homeworkMonth];
+
+        const nextHomeworkDate = nextHwTitle.match(dateRegex);
+        let [nextHomeworkDay, nextHomeworkMonth] = nextHomeworkDate[0].split('.');
+        [nextHomeworkDay, nextHomeworkMonth] = [+nextHomeworkDay, +nextHomeworkMonth];
+
+        if (homeworkDay !== nextHomeworkDay || nextHomeworkMonth !== homeworkMonth) {
+            newText += '-------------------\n';
+        }
     });
 
     return newText;

@@ -6,6 +6,7 @@ const returnLastHWLink = require('./linkMessage/returnLastHWLink');
 const deleteAllLinks = require('./linkMessage/deleteAllLinks');
 const { callbackDeleteLink, callbackDeleteAllLink } = require('./linkMessage/callbacks');
 const getTestAnswers = require('./linkMessage/getTestAnswers');
+const renderLinkMessage = require('./linkMessage/renderLinkMessage');
 
 module.exports = {
     checkShouldCreateNewLinkMessage,
@@ -17,4 +18,5 @@ module.exports = {
     deleteAllLinks,
     callbackDeleteAllLink,
     getTestAnswers,
+    renderLinkMessage,
 };
