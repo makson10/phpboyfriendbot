@@ -17,7 +17,7 @@ const getLessonSchedule = async () => {
 };
 
 const getLessonsLinks = async () => {
-    const lessons = await getLessonSchedule().then((data) => data['lessons']);
+    const lessons = await getLessonSchedule();
     return lessons.map((lesson) => lesson.link);
 }
 
