@@ -1,5 +1,6 @@
 const bot = require('@/bot');
 const { getLessonSchedule } = require('../handleFunction/dbRequestFunctions');
+const { renderScheduleMessage } = require('./renderScheduleMessage');
 const axios = require('axios').default;
 
 let newLinks;
@@ -32,8 +33,8 @@ let addLinksMessageId;
 
 
 const formKeyboardForDefaultMessage = async () => {
-    const lessons = await getLessonSchedule().then((schedule) => schedule.lessons);
-    newLinks = lessons.map((lesson) => lesson.link);
+    const lessons = await getLessonSchedule();
+    newLinks = await getLessonsLinks();
 
     for (let i = 0; i < lessons.length; i++) {
         const linkIndex = lessons.length - i;
@@ -180,6 +181,7 @@ const callbackAcceptNewLinks = async (callbackQuery) => {
 
             await sendNewLinksToServer();
             await bot.sendMessage(addLinksMessageChatId, 'Ссылки на уроки были добавлены!');
+            await renderScheduleMessage(newLinks);
 
             await resetAllSettings();
             break;

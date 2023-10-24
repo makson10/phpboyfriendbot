@@ -7,8 +7,10 @@ const {
     checkIfAddedNewLessons,
     callbackAddLinks,
     callbackAcceptNewLinks,
-    sendScheduleMessage
+    sendScheduleMessage,
+    renderScheduleMessage,
 } = require('@functions/lessonsPin');
+const { getLessonsLinks } = require("@/functions/handleFunction/dbRequestFunctions");
 
 bot.onText(/^\Уроки на /, async (msg) => {
     if (shouldHandleMessage(msg)) await handleLessonSchedule(msg);
@@ -20,6 +22,13 @@ bot.onText(/^\/add_links/, async (msg) => {
 
 bot.onText(/^\/send_schedule_message/, async (msg) => {
     if (shouldHandleMessage(msg)) await sendScheduleMessage(msg);
+});
+
+bot.onText(/^\/render_schedule_message/gms, async (msg) => {
+    if (shouldHandleMessage(msg)) {
+        const links = await getLessonsLinks();
+        await renderScheduleMessage(links);
+    }
 });
 
 bot.on('edited_message', async (msg) => {

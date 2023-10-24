@@ -1,6 +1,6 @@
 const bot = require("@/bot");
 const automaticMessagePinRegex = require('@assets/messageRegex');
-const { isMessageFromGroup } = require('@/functions/handleFunction/checkPermissions');
+const { isMessageFromGroup, isMessageFromSuperAdmin } = require('@/functions/handleFunction/checkPermissions');
 const {
     checkShouldCreateNewLinkMessage,
     setupNewLinkMessage,
@@ -31,7 +31,7 @@ bot.on('document', async (msg) => {
 });
 
 bot.onText(/^\/setup_new_link_message/, async (msg) => {
-    if (isMessageFromGroup(msg)) await setupNewLinkMessage(msg);
+    if (isMessageFromGroup(msg) && isMessageFromSuperAdmin(msg)) await setupNewLinkMessage(msg);
 });
 
 bot.onText(/^\/add_new_link/, async (msg) => {

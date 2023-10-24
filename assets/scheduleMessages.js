@@ -7,41 +7,41 @@ const chooseRandomEmoji = () => {
 
 const getEmojis = () => chooseRandomEmoji() + chooseRandomEmoji();
 
-const monday = (date) => `Уроки на ${date}: ${getEmojis()}
-08:00 - инфа (1)
-08:55 - ист укр
-09:50 - всесв ист
-10:50 - биология
-12:40 - англ
-13:35 - зах укр`
+const monday = (date, links) => `Уроки на ${date}: ${getEmojis()}
+08:00 - <a href="${links[0]}">инфа (1)</a>
+08:55 - <a href="${links[1]}">ист укр</a>
+09:50 - <a href="${links[2]}">всесв ист</a>
+10:50 - <a href="${links[3]}">биология</a>
+12:40 - <a href="${links[4]}">англ</a>
+13:35 - <a href="${links[5]}">зах укр</a>`
 
-const tuesday = (date) => `Уроки на ${date}: ${getEmojis()}
-09:50 - укр мова
-11:45 - алгебра
-13:35 - физра`
+const tuesday = (date, links) => `Уроки на ${date}: ${getEmojis()}
+09:50 - <a href="${links[0]}">укр мова</a>
+11:45 - <a href="${links[1]}">алгебра</a>
+13:35 - <a href="${links[2]}">физра</a>`
 
-const wednesday = (date) => `Уроки на ${date}: ${getEmojis()}
-08:00 - ист укр
-08:55 - всесв ист
-09:50 - география
-10:50 - химия
-11:45 - зар лит
-12:40 - инфа (2)`
+const wednesday = (date, links) => `Уроки на ${date}: ${getEmojis()}
+08:00 - <a href="${links[0]}">ист укр</a>
+08:55 - <a href="${links[1]}">всесв ист</a>
+09:50 - <a href="${links[2]}">география</a>
+10:50 - <a href="${links[3]}">химия</a>
+11:45 - <a href="${links[4]}">зар лит</a>
+12:40 - <a href="${links[5]}">инфа (2)</a>`
 
-const thursday = (date) => `Уроки на ${date}: ${getEmojis()}
-08:00 - физика
-08:55 - физика
-09:50 - геометрия
-11:45 - укр лит
-13:35 - англ`
+const thursday = (date, links) => `Уроки на ${date}: ${getEmojis()}
+08:00 - <a href="${links[0]}">физика</a>
+08:55 - <a href="${links[1]}">физика</a>
+09:50 - <a href="${links[2]}">геометрия</a>
+11:45 - <a href="${links[3]}">укр лит</a>
+13:35 - <a href="${links[4]}">англ</a>`
 
-const friday = (date) => `Уроки на ${date}: ${getEmojis()}
-08:00 - ист укр
-08:55 - всесв ист
-09:50 - физра
-10:50 - мист
-11:45 - физика
-12:40 - астрономия
-13:35 - химия`
+const friday = (date, links) => `Уроки на ${date}: ${getEmojis()}
+08:00 - <a href="${links[0]}">ист укр</a>
+08:55 - <a href="${links[1]}">всесв ист</a>
+09:50 - <a href="${links[2]}">физра</a>
+10:50 - <a href="${links[3]}">мист</a>
+11:45 - <a href="${links[4]}">физика</a>
+12:40 - <a href="${links[5]}">астрономия</a>
+13:35 - <a href="${links[6]}">химия</a>`
 
 module.exports = [monday, tuesday, wednesday, thursday, friday]

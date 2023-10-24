@@ -1,9 +1,16 @@
 const bot = require('@/bot');
 const { isMessageFromGroup } = require('../handleFunction/checkPermissions');
+const { getSupergroupId, getScheduleMessageId } = require('../handleFunction/dbRequestFunctions');
 const axios = require('axios').default;
 
+const unpinOldScheduleMessage = async () => {
+    const supergroupId = await getSupergroupId();
+    const oldScheduleMessageId = await getScheduleMessageId();
 
-const pinLessonScheduleMessage = async (msg) => {
+    await bot.unpinChatMessage(supergroupId, { message_id: oldScheduleMessageId, disable_notification: true });
+}
+
+const pinScheduleMessage = async (msg) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
@@ -47,7 +54,7 @@ const sendScheduleToServer = async (newLessonSchedule) => {
     await axios.post(process.env.MEDIATOR_BASE_URL + '/lessons/updateLessons', newLessonSchedule);
 }
 
-const updateLessonScheduleMessageId = async (messageId) => {
+const updateScheduleMessageId = async (messageId) => {
     await axios.post(
         process.env.MEDIATOR_BASE_URL + '/vars/updateLessonScheduleMessageId',
         { newLessonScheduleMessageId: messageId }
@@ -61,11 +68,10 @@ const handleLessonSchedule = async (msg) => {
     const schedule = await formScheduleToSend(messageText);
     await sendScheduleToServer(schedule);
 
-    if (isMessageFromGroup(msg)) {
-        await pinLessonScheduleMessage(msg);
-        await updateLessonScheduleMessageId(messageId);
-    }
+    if (!isMessageFromGroup(msg)) return;
+    await unpinOldScheduleMessage();
+    await pinScheduleMessage(msg);
+    await updateScheduleMessageId(messageId);
 }
-
 
 module.exports = handleLessonSchedule;

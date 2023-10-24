@@ -11,10 +11,15 @@ const getHWLinks = async () => {
 const getLessonSchedule = async () => {
     const lessonSchedule = await axios
         .get(process.env.MEDIATOR_BASE_URL + '/lessons')
-        .then(res => res.data);
+        .then(res => res.data['lessons']);
 
     return lessonSchedule;
 };
+
+const getLessonsLinks = async () => {
+    const lessons = await getLessonSchedule().then((data) => data['lessons']);
+    return lessons.map((lesson) => lesson.link);
+}
 
 const getVars = async () => {
     const vars = await axios
@@ -24,12 +29,17 @@ const getVars = async () => {
     return vars;
 }
 
+const getSupergroupId = async () => {
+    const vars = await getVars();
+    return '-100' + vars["supergroup_chat_id"];
+};
+
 const getLinkMessageId = async () => {
     const vars = await getVars();
     return vars["LINK_MESSAGE_ID"];
 };
 
-const getLessonScheduleMessageId = async () => {
+const getScheduleMessageId = async () => {
     const vars = await getVars();
     return vars["LESSON_SCHEDULE_MESSAGE_ID"];
 };
@@ -37,7 +47,9 @@ const getLessonScheduleMessageId = async () => {
 module.exports = {
     getHWLinks,
     getLessonSchedule,
+    getLessonsLinks,
     getVars,
+    getSupergroupId,
     getLinkMessageId,
-    getLessonScheduleMessageId,
+    getScheduleMessageId,
 }

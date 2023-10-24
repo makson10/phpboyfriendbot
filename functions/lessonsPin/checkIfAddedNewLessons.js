@@ -1,11 +1,11 @@
-const { getLessonScheduleMessageId, getLessonSchedule } = require("@/functions/handleFunction/dbRequestFunctions");
+const { getScheduleMessageId, getLessonSchedule } = require("@/functions/handleFunction/dbRequestFunctions");
 const handleLessonSchedule = require("./handleLessonSchedule");
 
 const checkIfAddedNewLessons = async (msg) => {
-    const lessonScheduleMessageId = await getLessonScheduleMessageId();
-    if (!msg.message_id === lessonScheduleMessageId) return;
+    const scheduleMessageId = await getScheduleMessageId();
+    if (!msg.message_id === scheduleMessageId) return;
 
-    const lessons = await getLessonSchedule().then((schedule) => schedule.lessons);
+    const lessons = await getLessonSchedule();
 
     const messageByLines = msg.text.split("\n");
     const editedLessonSchedule = messageByLines.slice(1);
