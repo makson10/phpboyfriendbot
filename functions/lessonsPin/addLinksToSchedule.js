@@ -1,5 +1,5 @@
 const bot = require('@/bot');
-const { getLessonSchedule } = require('../handleFunction/dbRequestFunctions');
+const { getLessonSchedule, getLessonsLinks } = require('../handleFunction/dbRequestFunctions');
 const { renderScheduleMessage } = require('./renderScheduleMessage');
 const axios = require('axios').default;
 
