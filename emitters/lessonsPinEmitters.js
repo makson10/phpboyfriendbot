@@ -28,6 +28,7 @@ bot.onText(/^\/render_schedule_message/gms, async (msg) => {
     if (shouldHandleMessage(msg)) {
         const links = await getLessonsLinks();
         await renderScheduleMessage(links);
+        await bot.deleteMessage(msg.chat.id, msg.message_id);
     }
 });
 
