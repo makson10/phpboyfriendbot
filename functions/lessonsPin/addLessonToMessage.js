@@ -12,8 +12,7 @@ const addLessonToMessage = async (msg, newLessonDataString) => {
 
     const dataFromMessage = newLessonDataString.split(' - ');
     const lessonTitle = dataFromMessage[1];
-    const [hour, minute] = dataFromMessage[0].split(':');
-
+    let [hour, minute] = dataFromMessage[0].split(':');
     if (hour.length === 1) hour = '0' + hour;
 
     const newLesson = {
