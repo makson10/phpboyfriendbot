@@ -1,30 +1,28 @@
 const bot = require("@/bot");
-const scheduleMessages = require("@/assets/scheduleMessages");
-const { getScheduleMessageId, getSupergroupId } = require("../handleFunction/dbRequestFunctions");
+const { getScheduleMessageId, getSupergroupId, getLessonSchedule, getLessonsLinks, getScheduleTitle } = require("../handleFunction/dbRequestFunctions");
 
-const getScheduleDate = () => {
-    const currentDate = new Date();
-    const currentHour = currentDate.getHours();
+const formScheduleMessageFromData = (dayTitle, scheduleData) => {
+    let newScheduleMessage = dayTitle + '\n';
 
-    const nextDate = new Date(currentDate);
-    if (currentHour >= 15) nextDate.setDate(currentDate.getDate() + 1);
-    return nextDate;
+    scheduleData.map((lesson) => {
+        const time = lesson.time.hour + ':' + lesson.time.minute;
+        const title = '<a href="' + lesson.link + '">' + lesson.title + '</a>'
+
+        newScheduleMessage += time + ' - ' + title + '\n';
+    });
+
+    return newScheduleMessage;
 }
 
-const getScheduleMessage = (links) => {
-    const scheduleDate = new Date(getScheduleDate());
-
-    const dayOfWeek = scheduleDate.getDay() - 1;
-    const fullDate = scheduleDate.getDate().toString() + '.' + (scheduleDate.getMonth() + 1);
-
-    return scheduleMessages[dayOfWeek](fullDate, links);
-}
-
-const renderScheduleMessage = async (links) => {
+const renderScheduleMessage = async () => {
     const supergroupId = await getSupergroupId();
     const scheduleMessageId = await getScheduleMessageId();
 
-    const newScheduleMessages = getScheduleMessage(links);
+    const dayTitle = await getScheduleTitle();
+    const scheduleData = await getLessonSchedule();
+
+    const newScheduleMessages = formScheduleMessageFromData(dayTitle, scheduleData);
+
     await bot.editMessageText(
         newScheduleMessages,
         {
@@ -36,4 +34,4 @@ const renderScheduleMessage = async (links) => {
     );
 }
 
-module.exports = { renderScheduleMessage, getScheduleMessage };
+module.exports = renderScheduleMessage;

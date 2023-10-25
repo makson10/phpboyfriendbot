@@ -9,8 +9,10 @@ const {
     callbackAcceptNewLinks,
     sendScheduleMessage,
     renderScheduleMessage,
+    removeLessonFromMessage,
+    addLessonToMessage,
+    callbackRemoveLesson,
 } = require('@functions/lessonsPin');
-const { getLessonsLinks } = require("@/functions/handleFunction/dbRequestFunctions");
 
 bot.onText(/^\Уроки на /, async (msg) => {
     if (shouldHandleMessage(msg)) await handleLessonSchedule(msg);
@@ -26,10 +28,17 @@ bot.onText(/^\/send_schedule_message/, async (msg) => {
 
 bot.onText(/^\/render_schedule_message/gms, async (msg) => {
     if (shouldHandleMessage(msg)) {
-        const links = await getLessonsLinks();
-        await renderScheduleMessage(links);
+        await renderScheduleMessage();
         await bot.deleteMessage(msg.chat.id, msg.message_id);
     }
+});
+
+bot.onText(/^\/remove_lesson/, async (msg) => {
+    if (shouldHandleMessage(msg)) await removeLessonFromMessage(msg);
+});
+
+bot.onText(/^\/add_lesson (.+)/, async (msg, match) => {
+    if (shouldHandleMessage(msg)) await addLessonToMessage(msg, match[1]);
 });
 
 bot.on('edited_message', async (msg) => {
@@ -39,4 +48,5 @@ bot.on('edited_message', async (msg) => {
 bot.on('callback_query', async (callbackQuery) => {
     await callbackAddLinks(callbackQuery);
     await callbackAcceptNewLinks(callbackQuery);
+    await callbackRemoveLesson(callbackQuery);
 });

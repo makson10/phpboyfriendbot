@@ -1,7 +1,7 @@
 const bot = require("@/bot");
 const { getSupergroupId } = require('@/functions/handleFunction/dbRequestFunctions');
 const handleLessonSchedule = require("./handleLessonSchedule");
-const { getScheduleMessage } = require("./renderScheduleMessage");
+const getScheduleMessage = require("./getScheduleMessage");
 
 const sendScheduleMessage = async (msg) => {
     const chatId = msg.chat.id;
@@ -11,8 +11,8 @@ const sendScheduleMessage = async (msg) => {
     const scheduleMessages = getScheduleMessage([]);
 
     await bot.deleteMessage(chatId, messageId);
-    // const newScheduleMessage = await bot.sendMessage(chatId, scheduleMessages, { parse_mode: 'HTML' });
-    const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
+    const newScheduleMessage = await bot.sendMessage(chatId, scheduleMessages, { parse_mode: 'HTML' });
+    // const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
     await handleLessonSchedule(newScheduleMessage);
 }
 

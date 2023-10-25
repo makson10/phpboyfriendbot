@@ -15,16 +15,7 @@ const callbackDeleteLink = async (callbackQuery) => {
     const messageId = callbackQuery.message.message_id;
     const choosenOption = callbackQuery.data;
 
-    if (
-        choosenOption === 'deleteLink_deleteYes' ||
-        choosenOption === 'deleteLink_deleteNo' ||
-        /^addLinks_link/.test(choosenOption) ||
-        choosenOption === 'addLinks_cancel' ||
-        choosenOption === 'addLinks_deleteAllLinks' ||
-        choosenOption === 'addLinks_accept'
-    ) return;
-
-
+    if (!choosenOption.match(/deleteLink_/)) return;
     await bot.deleteMessage(chatId, messageId);
 
     if (choosenOption === 'deleteLink_cancel') return;
@@ -33,11 +24,14 @@ const callbackDeleteLink = async (callbackQuery) => {
 }
 
 const callbackDeleteAllLink = async (callbackQuery) => {
-    const userChoise = callbackQuery.data;
+    const messageId = callbackQuery.message.message_id;
     const chatId = callbackQuery.message.chat.id;
+    const userChoise = callbackQuery.data;
 
-    if (userChoise === "deleteLink_deleteYes") {
-        await bot.deleteMessage(chatId, messageId);
+    if (!userChoise.match(/deleteAllLink_/)) return;
+    await bot.deleteMessage(chatId, messageId);
+
+    if (userChoise === "deleteAllLink_yes") {
         await deleteAllLinksFromServer();
         await renderLinkMessage(chatId);
     }

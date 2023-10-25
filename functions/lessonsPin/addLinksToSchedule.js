@@ -1,6 +1,6 @@
 const bot = require('@/bot');
 const { getLessonSchedule, getLessonsLinks } = require('../handleFunction/dbRequestFunctions');
-const { renderScheduleMessage } = require('./renderScheduleMessage');
+const renderScheduleMessage = require('./renderScheduleMessage');
 const axios = require('axios').default;
 
 let newLinks;
@@ -146,8 +146,7 @@ const callbackAddLinks = async (callbackQuery) => {
     addLinksMessageChatId = callbackQuery.message.chat.id;
     addLinksMessageId = callbackQuery.message.message_id;
 
-    if (!/^addLinks_link/.test(callbackUserChoise)) return;
-    if (callbackUserChoise === 'addLinks_cancel' || callbackUserChoise === 'addLinks_deleteAllLinks' || callbackUserChoise === 'addLinks_accept') return;
+    if (!callbackUserChoise.match(/addLinks_link/)) return;
 
     await bot.editMessageText(
         'Отправь ссылку на данный урок',

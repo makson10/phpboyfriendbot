@@ -8,6 +8,14 @@ const getHWLinks = async () => {
     return hwLinks;
 };
 
+const getScheduleTitle = async () => {
+    const scheduleTitle = await axios
+        .get(process.env.MEDIATOR_BASE_URL + '/lessons')
+        .then(res => res.data['dayTitle']);
+
+    return scheduleTitle;
+};
+
 const getLessonSchedule = async () => {
     const lessonSchedule = await axios
         .get(process.env.MEDIATOR_BASE_URL + '/lessons')
@@ -47,6 +55,7 @@ const getScheduleMessageId = async () => {
 module.exports = {
     getHWLinks,
     getLessonSchedule,
+    getScheduleTitle,
     getLessonsLinks,
     getVars,
     getSupergroupId,
