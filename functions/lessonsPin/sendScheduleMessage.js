@@ -11,8 +11,8 @@ const sendScheduleMessage = async (msg) => {
     const scheduleMessages = getScheduleMessage([]);
 
     await bot.deleteMessage(chatId, messageId);
-    const newScheduleMessage = await bot.sendMessage(chatId, scheduleMessages, { parse_mode: 'HTML' });
-    // const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
+    // const newScheduleMessage = await bot.sendMessage(chatId, scheduleMessages, { parse_mode: 'HTML' });
+    const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
     await handleLessonSchedule(newScheduleMessage);
 }
 
