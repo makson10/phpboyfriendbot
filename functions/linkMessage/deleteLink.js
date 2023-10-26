@@ -20,7 +20,7 @@ const formDeleteMessageKeyboard = async (hwLinks) => {
         keyboard.inline_keyboard.push([
             {
                 text: lessonTitle,
-                callback_data: lessonTitle,
+                callback_data: 'deleteLink_' + lessonTitle,
             },
         ]);
     });

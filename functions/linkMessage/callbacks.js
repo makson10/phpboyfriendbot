@@ -19,7 +19,8 @@ const callbackDeleteLink = async (callbackQuery) => {
     await bot.deleteMessage(chatId, messageId);
 
     if (choosenOption === 'deleteLink_cancel') return;
-    await deleteHw(choosenOption);
+    const hwTitle = choosenOption.replace('deleteLink_', '');
+    await deleteHw(hwTitle);
     await renderLinkMessage(chatId);
 }
 
