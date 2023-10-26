@@ -6,10 +6,7 @@ const checkShouldCreateNewLinkMessage = async (msg) => {
     if (messageId % 50 !== 0) return;
 
     const linkMessageId = await getLinkMessageId();
-
-    if (messageId >= linkMessageId + 590) {
-        await setupNewLinkMessage(msg, false);
-    }
+    if (messageId >= linkMessageId + 990) await setupNewLinkMessage(msg, false);
 }
 
 module.exports = checkShouldCreateNewLinkMessage;
