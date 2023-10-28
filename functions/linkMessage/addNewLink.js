@@ -1,8 +1,8 @@
 const bot = require('@/bot');
-const axios = require('axios').default;
 const addNewLinkAnswers = require('@assets/addNewLinkAnswers');
 const renderLinkMessage = require('./renderLinkMessage');
 const { getHWLinks } = require('@/functions/handleFunction/dbRequestFunctions');
+const axios = require('axios').default;
 
 const getCommandParameters = (messageText) => {
     let messageParameter = messageText.replace('/add_new_link', '').trim();
@@ -30,23 +30,19 @@ const haveMessageReplyProperty = (msg) => {
     } else return true;
 }
 
-const reduceLessonTitleLength = (text) => {
-    return text.slice(0, 30);
-}
+const reduceLessonTitleLength = (text) => text.slice(0, 21);
 
 const determineLessonTitleFromReplyMessage = (messageParameter, replyMessage) => {
     let lessonTitle;
 
     if (messageParameter !== '') {
-        lessonTitle = messageParameter
-    } else {
-        if (replyMessage.hasOwnProperty("caption")) {
-            lessonTitle = replyMessage['caption'].split("\n")[0];
-        } else if (replyMessage.hasOwnProperty("document")) {
-            lessonTitle = replyMessage.document.file_name;
-        } else if (replyMessage.hasOwnProperty("text")) {
-            lessonTitle = replyMessage["text"].split("\n")[0];
-        }
+        lessonTitle = messageParameter;
+    } else if (replyMessage.hasOwnProperty("caption")) {
+        lessonTitle = replyMessage['caption'].split("\n")[0];
+    } else if (replyMessage.hasOwnProperty("document")) {
+        lessonTitle = replyMessage.document.file_name;
+    } else if (replyMessage.hasOwnProperty("text")) {
+        lessonTitle = replyMessage["text"].split("\n")[0];
     }
 
     return lessonTitle;
@@ -103,7 +99,6 @@ const formNewHW = async (msg, wasInvokedFromCommand) => {
     if (!lessonTitle) return;
 
     const link = formHwLink(msg);
-
     const hw = {
         lessonTitle: lessonTitle,
         link: link,
@@ -135,7 +130,7 @@ const addNewLink = async (msg, wasInvokedFromCommand = true) => {
     await storeNewHWInServer(newHW);
 
     await sendRandomAnswer(chatId, messageId, wasInvokedFromCommand);
-    await renderLinkMessage(chatId);
+    await renderLinkMessage();
 }
 
 module.exports = addNewLink;

@@ -4,10 +4,14 @@ const { getSupergroupId, getScheduleMessageId } = require('../handleFunction/dbR
 const axios = require('axios').default;
 
 const unpinOldScheduleMessage = async () => {
-    const supergroupId = await getSupergroupId();
-    const oldScheduleMessageId = await getScheduleMessageId();
+    try {
+        const supergroupId = await getSupergroupId();
+        const oldScheduleMessageId = await getScheduleMessageId();
 
-    await bot.unpinChatMessage(supergroupId, { message_id: oldScheduleMessageId, disable_notification: true });
+        await bot.unpinChatMessage(supergroupId, { message_id: oldScheduleMessageId, disable_notification: true });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const pinScheduleMessage = async (msg) => {

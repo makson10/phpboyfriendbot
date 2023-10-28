@@ -46,7 +46,7 @@ bot.onText(/^\/return_last_hw_link/, async (msg) => {
     if (!isMessageFromGroup(msg)) return;
 
     await returnLastHWLink(msg);
-    await renderLinkMessage(msg.chat.id);
+    await renderLinkMessage();
 });
 
 bot.onText(/^\/delete_all_links/, async (msg) => {

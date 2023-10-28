@@ -21,7 +21,7 @@ const callbackDeleteLink = async (callbackQuery) => {
     if (choosenOption === 'deleteLink_cancel') return;
     const hwTitle = choosenOption.replace('deleteLink_', '');
     await deleteHw(hwTitle);
-    await renderLinkMessage(chatId);
+    await renderLinkMessage();
 }
 
 const callbackDeleteAllLink = async (callbackQuery) => {
@@ -34,7 +34,7 @@ const callbackDeleteAllLink = async (callbackQuery) => {
 
     if (userChoise === "deleteAllLink_yes") {
         await deleteAllLinksFromServer();
-        await renderLinkMessage(chatId);
+        await renderLinkMessage();
     }
 }
 

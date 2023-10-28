@@ -1,5 +1,5 @@
 const bot = require('@/bot');
-const { getHWLinks, getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
+const { getHWLinks, getLinkMessageId, getSupergroupId } = require('@/functions/handleFunction/dbRequestFunctions');
 
 const dateRegex = /[0-3][0-9].[0-1][0-9]/gm;
 
@@ -45,10 +45,11 @@ const updateLinkMessage = async (chatId, linkMessageId, newText) => {
     });
 };
 
-const renderLinkMessage = async (chatId) => {
+const renderLinkMessage = async () => {
     const hwLinks = await getHWLinks();
     const linkMessageId = await getLinkMessageId();
-    if (!linkMessageId) return;
+    const chatId = await getSupergroupId();
+    if (!linkMessageId || !chatId) return;
 
     const newLinkMessageText = await formNewLinkMessageText(hwLinks);
     await updateLinkMessage(chatId, linkMessageId, newLinkMessageText);
