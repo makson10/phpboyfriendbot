@@ -6,7 +6,7 @@ const getScheduleDate = () => {
 
     const nextDate = new Date(currentDate);
     // if (currentHour >= 15) nextDate.setDate(currentDate.getDate() + 1);
-    nextDate.setDate(currentDate.getDate() - 1);
+    nextDate.setDate(currentDate.getDate() - 2);
     return nextDate;
 }
 
