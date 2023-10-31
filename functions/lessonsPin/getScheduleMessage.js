@@ -15,8 +15,8 @@ const getScheduleDayOfWeek = (scheduleDate) => {
 }
 
 const getFullScheduleDate = (scheduleDate) => {
-    const day = scheduleDate.getDate();
-    const month = scheduleDate.getMonth() + 1;
+    let day = scheduleDate.getDate();
+    let month = scheduleDate.getMonth() + 1;
 
     if (day.toString().length === 1) day = '0' + day;
     return day + '.' + month;
