@@ -32,7 +32,8 @@ const sendScheduleMessage = async (msg) => {
     const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
     await handleLessonSchedule(newScheduleMessage);
 
-    if (todayHours >= 22 || todayHours === 0 || todayHours === 1) await deleteOldHw();
+    // if (todayHours >= 22 || todayHours === 0 || todayHours === 1) await deleteOldHw();
+    await deleteOldHw();
 }
 
 module.exports = sendScheduleMessage;
