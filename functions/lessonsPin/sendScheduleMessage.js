@@ -14,7 +14,7 @@ const deleteOldHw = async () => {
 
     setTimeout(async () => {
         await renderLinkMessage();
-    }, 3000);
+    }, 2000);
 }
 
 const sendScheduleMessage = async (msg) => {

@@ -45,8 +45,8 @@ const updateLinkMessage = async (chatId, linkMessageId, newText) => {
     });
 };
 
-const renderLinkMessage = async (newHwLinks = null) => {
-    const hwLinks = newHwLinks ? newHwLinks : await getHWLinks();
+const renderLinkMessage = async () => {
+    const hwLinks = await getHWLinks();
     const linkMessageId = await getLinkMessageId();
     const chatId = await getSupergroupId();
     if (!linkMessageId || !chatId) return;
