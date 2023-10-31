@@ -11,10 +11,7 @@ const todayDay = todayDate.getDay();
 
 const deleteOldHw = async () => {
     await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/removeOldHwLinks');
-
-    setTimeout(async () => {
-        await renderLinkMessage();
-    }, 2000);
+    await renderLinkMessage();
 }
 
 const sendScheduleMessage = async (msg) => {
