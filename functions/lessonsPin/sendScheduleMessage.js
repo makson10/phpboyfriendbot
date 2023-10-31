@@ -11,7 +11,7 @@ const todayDay = todayDate.getDay();
 
 const deleteOldHw = async () => {
     await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/removeOldHwLinks');
-    setTimeout(() => renderLinkMessage(), 1000);
+    setTimeout(renderLinkMessage, 2000);
 }
 
 const sendScheduleMessage = async (msg) => {
@@ -21,7 +21,7 @@ const sendScheduleMessage = async (msg) => {
     const supergroupId = await getSupergroupId();
     await bot.deleteMessage(chatId, messageId);
 
-    if (todayDay >= 5) {
+    if (todayDay === 5 || (todayDay === 6 && todayHours < 20)) {
         await bot.sendMessage(chatId, 'Завтра выходной братик, отдыхай');
         return;
     }
