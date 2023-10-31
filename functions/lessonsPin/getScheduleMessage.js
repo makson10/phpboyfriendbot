@@ -9,11 +9,24 @@ const getScheduleDate = () => {
     return nextDate;
 }
 
+const getScheduleDayOfWeek = (scheduleDate) => {
+    const dayOfWeek = scheduleDate.getDay() - 1;
+    return dayOfWeek;
+}
+
+const getFullScheduleDate = (scheduleDate) => {
+    const day = scheduleDate.getDate();
+    const month = scheduleDate.getMonth() + 1;
+
+    if (day.toString().length === 1) day = '0' + day;
+    return day + '.' + month;
+}
+
 const getScheduleMessage = (links) => {
     const scheduleDate = new Date(getScheduleDate());
 
-    const dayOfWeek = scheduleDate.getDay() - 1;
-    const fullDate = scheduleDate.getDate().toString() + '.' + (scheduleDate.getMonth() + 1);
+    const dayOfWeek = getScheduleDayOfWeek(scheduleDate);
+    const fullDate = getFullScheduleDate(scheduleDate);
 
     return scheduleMessages[dayOfWeek](fullDate, links);
 }
