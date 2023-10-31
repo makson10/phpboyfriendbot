@@ -21,10 +21,10 @@ const sendScheduleMessage = async (msg) => {
     const supergroupId = await getSupergroupId();
     await bot.deleteMessage(chatId, messageId);
 
-    // if (todayDay >= 5) {
-    //     await bot.sendMessage(chatId, 'Завтра выходной братик, отдыхай');
-    //     return;
-    // }
+    if (todayDay >= 5) {
+        await bot.sendMessage(chatId, 'Завтра выходной братик, отдыхай');
+        return;
+    }
 
     const scheduleMessages = getScheduleMessage([]);
     //* For dev testing:
