@@ -10,8 +10,10 @@ const todayHours = todayDate.getHours();
 const todayDay = todayDate.getDay();
 
 const deleteOldHw = async () => {
-    await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/removeOldHwLinks');
-    setTimeout(renderLinkMessage, 2000);
+    const deleteResponse = await axios.post(process.env.MEDIATOR_BASE_URL + '/hw/removeOldHwLinks');
+    const newHw = deleteResponse.data;
+    await renderLinkMessage(newHw);
+    // setTimeout(renderLinkMessage, 2000);
 }
 
 const sendScheduleMessage = async (msg) => {
