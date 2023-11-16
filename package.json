@@ -16,5 +16,8 @@
 		"@functions": "./functions/",
 		"@assets": "./assets/",
 		"@emitters": "./emitters/"
+	},
+	"engines": {
+		"node": ">=20.9.0"
 	}
 }
