@@ -37,12 +37,14 @@ const determineLessonTitleFromReplyMessage = (messageParameter, replyMessage) =>
 
     if (messageParameter !== '') {
         lessonTitle = messageParameter;
-    } else if (replyMessage.hasOwnProperty("caption")) {
-        lessonTitle = replyMessage['caption'].split("\n")[0];
-    } else if (replyMessage.hasOwnProperty("document")) {
-        lessonTitle = replyMessage.document.file_name;
-    } else if (replyMessage.hasOwnProperty("text")) {
-        lessonTitle = replyMessage["text"].split("\n")[0];
+    } else {
+        if (replyMessage.hasOwnProperty("caption")) {
+            lessonTitle = replyMessage['caption'].split("\n")[0];
+        } else if (replyMessage.hasOwnProperty("document")) {
+            lessonTitle = replyMessage.document.file_name;
+        } else if (replyMessage.hasOwnProperty("text")) {
+            lessonTitle = replyMessage["text"].split("\n")[0];
+        }
     }
 
     return lessonTitle;
@@ -99,12 +101,10 @@ const formNewHW = async (msg, wasInvokedFromCommand) => {
     if (!lessonTitle) return;
 
     const link = formHwLink(msg);
-    const hw = {
+    return {
         lessonTitle: lessonTitle,
         link: link,
     };
-
-    return hw;
 };
 
 const storeNewHWInServer = async (hw) => {
