@@ -30,7 +30,7 @@ const haveMessageReplyProperty = (msg) => {
     } else return true;
 }
 
-const reduceLessonTitleLength = (text) => text.slice(0, 21);
+const executeHwTitleFromText = (text) => text.split('\n')[0].slice(0, 32);
 
 const determineLessonTitleFromReplyMessage = (messageParameter, replyMessage) => {
     let lessonTitle;
@@ -64,7 +64,7 @@ const formHwTitle = async (msg, wasInvokedFromCommand) => {
         lessonTitle = determineLessonTitleFromReplyMessage(messageParameter, replyMessage);
     }
 
-    lessonTitle = reduceLessonTitleLength(lessonTitle);
+    lessonTitle = executeHwTitleFromText(lessonTitle);
     lessonTitle = await addLessonTitleSufix(lessonTitle);
 
     return lessonTitle;
