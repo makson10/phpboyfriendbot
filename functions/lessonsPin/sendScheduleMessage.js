@@ -10,22 +10,19 @@ const deleteOldHw = async () => {
     await renderLinkMessage();
 }
 
-const sendScheduleMessage = async (msg) => {
-    const chatId = msg.chat.id;
-    const messageId = msg.message_id;
-
+const sendScheduleMessage = async (msg, wasInvokedFromCommand = true) => {
     const todayDate = new Date();
-    const todayHours = todayDate.getUTCHours();
     const todayDay = todayDate.getUTCDay();
+    const todayHours = todayDate.getUTCHours();
 
-    const supergroupId = await getSupergroupId();
-    await bot.deleteMessage(chatId, messageId);
+    if (wasInvokedFromCommand) await bot.deleteMessage(msg.chat.id, msg.message_id);
 
-    if (todayDay === 5 || (todayDay === 6 && todayHours < 20)) {
-        await bot.sendMessage(chatId, 'Завтра выходной братик, отдыхай');
+    if (todayDay === 6 || (todayDay === 0 && todayHours < 20)) {
+        if (wasInvokedFromCommand) await bot.sendMessage(msg.chat.id, 'Завтра выходной братик, отдыхай');
         return;
     }
 
+    const supergroupId = await getSupergroupId();
     const scheduleMessages = getScheduleMessage([]);
     const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
     await handleLessonSchedule(newScheduleMessage);

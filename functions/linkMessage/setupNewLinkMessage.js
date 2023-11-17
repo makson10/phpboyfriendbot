@@ -1,6 +1,7 @@
 const bot = require('@/bot');
 const axios = require('axios').default;
-const { getHWLinks, getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
+const { getLinkMessageId } = require('@/functions/handleFunction/dbRequestFunctions');
+const renderLinkMessage = require('./renderLinkMessage');
 
 const updateDataAboutLinkMessage = async (messageId) => {
     await axios.post(
@@ -9,19 +10,7 @@ const updateDataAboutLinkMessage = async (messageId) => {
     );
 };
 
-const formNewLinkMessage = async (msg) => {
-    const hwLinks = await getHWLinks();
-
-    let newLinkMessageText = `Ссылки на дз:\n`;
-    await hwLinks.map((hw) => {
-        newLinkMessageText += '-------------------\n';
-        newLinkMessageText += `<a href="${hw.link}">${hw.lessonTitle}</a>\n`;
-    });
-
-    return newLinkMessageText;
-};
-
-const sendNewLinkMessage = async (chatId, newLinkMessageText) => {
+const sendStartLinkMessage = async (chatId, newLinkMessageText) => {
     const newLinkMessage = await bot.sendMessage(chatId, newLinkMessageText, {
         parse_mode: "HTML",
     });
@@ -42,10 +31,10 @@ const unpinOldLinkMessageAndPinNew = async (chatId, oldLinkMessageId, newLinkMes
     await pinNewLinkMessage(chatId, newLinkMessageId);
 };
 
-const renderNewLinkMessage = async (chatId) => {
+const sendNewLinkMessage = async (chatId) => {
     const oldLinkMessageId = await getLinkMessageId();
-    const newLinkMessageText = await formNewLinkMessage();
-    const newLinkMessageId = await sendNewLinkMessage(chatId, newLinkMessageText);
+    const newMessageText = 'Ссылки на дз:';
+    const newLinkMessageId = await sendStartLinkMessage(chatId, newMessageText);
 
     await unpinOldLinkMessageAndPinNew(chatId, oldLinkMessageId, newLinkMessageId);
     await updateDataAboutLinkMessage(newLinkMessageId);
@@ -55,7 +44,8 @@ const setupNewLinkMessage = async (msg, shouldDeleteCommandMessage = true) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
 
-    await renderNewLinkMessage(chatId);
+    await sendNewLinkMessage(chatId);
+    await renderLinkMessage();
     if (shouldDeleteCommandMessage) await bot.deleteMessage(chatId, messageId);
 }
 
