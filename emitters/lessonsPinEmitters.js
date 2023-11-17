@@ -1,6 +1,6 @@
 const bot = require("@/bot");
 const shouldHandleMessage = require('@/functions/handleFunction/shouldHandleMessage');
-const { isMessageFromGroup } = require('@/functions/handleFunction/checkPermissions');
+const { isMessageFromGroup, isMessageFromSuperAdmin } = require('@/functions/handleFunction/checkPermissions');
 const {
     handleLessonSchedule,
     addLinksToSchedule,
@@ -19,7 +19,7 @@ bot.onText(/^\Уроки на /, async (msg) => {
 });
 
 bot.onText(/^\/add_links/, async (msg) => {
-    if (shouldHandleMessage(msg)) await addLinksToSchedule(msg);
+    if (isMessageFromSuperAdmin(msg)) await addLinksToSchedule(msg);
 });
 
 bot.onText(/^\/send_schedule_message/, async (msg) => {

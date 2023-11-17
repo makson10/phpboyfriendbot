@@ -21,21 +21,16 @@ const sendScheduleMessage = async (msg) => {
     const supergroupId = await getSupergroupId();
     await bot.deleteMessage(chatId, messageId);
 
-    if ((todayDay === 6 && todayHours < 20)) {
+    if (todayDay === 5 || (todayDay === 6 && todayHours < 20)) {
         await bot.sendMessage(chatId, 'Завтра выходной братик, отдыхай');
         return;
-    } // todayDay === 5 || 
+    }
 
     const scheduleMessages = getScheduleMessage([]);
-    //* For dev testing:
-    // const newScheduleMessage = await bot.sendMessage(chatId, scheduleMessages, { parse_mode: 'HTML' });
     const newScheduleMessage = await bot.sendMessage(supergroupId, scheduleMessages, { parse_mode: 'HTML' });
     await handleLessonSchedule(newScheduleMessage);
 
-    if (todayHours === 9 || todayHours >= 20) await deleteOldHw();
+    if (todayHours >= 20) await deleteOldHw();
 }
 
 module.exports = sendScheduleMessage;
-
-// 22 23 00 01
-// 20 21 22 23
