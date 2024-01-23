@@ -19,6 +19,7 @@ const getFullScheduleDate = (scheduleDate) => {
     let month = scheduleDate.getMonth() + 1;
 
     if (day.toString().length === 1) day = '0' + day;
+    if (month.toString().length === 1) month = '0' + month;
     return day + '.' + month;
 }
 
